@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Header } from './Header';
 import { BackgroundEffects } from './BackgroundEffects';
@@ -21,15 +22,15 @@ const avatarIconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
 };
 
 // Points configuration for the quiz section
-const QUIZ_POINTS: Record<string, { base: number; bonus: number }> = {
-    'quiz_q1': { base: 100, bonus: 10 },
-    'quiz_q2': { base: 50, bonus: 10 },
-    'quiz_q3': { base: 50, bonus: 10 },
-    'quiz_q4': { base: 50, bonus: 10 },
-    'quiz_q5': { base: 50, bonus: 10 },
-    'quiz_q6_prompt': { base: 150, bonus: 20 },
-    'quiz_q7_prompt': { base: 150, bonus: 20 },
-    'quiz_q8': { base: 200, bonus: 20 },
+const QUIZ_POINTS: Record<string, number> = {
+    'quiz_q1': 100,
+    'quiz_q2': 100,
+    'quiz_q3': 100,
+    'quiz_q4': 100,
+    'quiz_q5': 100,
+    'quiz_q6_prompt': 100,
+    'quiz_q7_prompt': 100,
+    'quiz_q8': 200,
 };
 
 const TypingIndicator = () => (
@@ -280,11 +281,14 @@ const App: React.FC = () => {
         // --- QUIZ SCORING (for nodes with isCorrect flag like MCQs and Drag&Drop) ---
         if (node.isCorrect !== undefined) {
             const questionId = gameState.lastQuestionId;
-            const pointsInfo = QUIZ_POINTS[questionId as keyof typeof QUIZ_POINTS];
+            const basePoints = QUIZ_POINTS[questionId as keyof typeof QUIZ_POINTS];
 
             if (node.isCorrect) {
-                if (pointsInfo) {
-                    let pointsToAdd = pointsInfo.base + (gameState.streak * 10);
+                if (basePoints) {
+                    let pointsToAdd = basePoints;
+                    if (gameState.streak > 0) {
+                        pointsToAdd += 20;
+                    }
                     updateScore(pointsToAdd);
                 }
                 setGameState(prev => ({
@@ -516,8 +520,11 @@ const App: React.FC = () => {
         const lastMessage = messages[messages.length - 1];
         addMessage({ sender: 'user', text: t('btn_finish_quiz') }, lastMessage.id);
         
-        const pointsInfo = QUIZ_POINTS['quiz_q8'];
-        let pointsToAdd = pointsInfo.base + (gameState.streak * 10);
+        const basePoints = QUIZ_POINTS['quiz_q8'];
+        let pointsToAdd = basePoints;
+        if (gameState.streak > 0) {
+            pointsToAdd += 20;
+        }
         
         setGameState(prev => ({ ...prev, q8Skipped: false }));
         updateScore(pointsToAdd);
@@ -610,11 +617,14 @@ const App: React.FC = () => {
 
                 if (isRelevant) {
                      if (currentNodeId === 'quiz_q6_prompt' || currentNodeId === 'quiz_q7_prompt') {
-                        const pointsInfo = QUIZ_POINTS[currentNodeId];
+                        const basePoints = QUIZ_POINTS[currentNodeId];
                         const attempts = currentNodeId === 'quiz_q6_prompt' ? gameState.q6Attempts : gameState.q7Attempts;
                         const penalty = (attempts - 1) * 10;
                         
-                        let pointsToAdd = pointsInfo.base + (gameState.streak * 10);
+                        let pointsToAdd = basePoints;
+                        if (gameState.streak > 0) {
+                            pointsToAdd += 20;
+                        }
                         const finalPoints = Math.max(0, pointsToAdd - penalty);
                         updateScore(finalPoints);
                         
