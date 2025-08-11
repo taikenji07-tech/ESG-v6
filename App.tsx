@@ -28,8 +28,6 @@ const QUIZ_POINTS: Record<string, number> = {
     'quiz_q3': 100,
     'quiz_q4': 100,
     'quiz_q5': 100,
-    'quiz_q6_prompt': 100,
-    'quiz_q7_prompt': 100,
     'quiz_q8': 200,
 };
 
@@ -617,17 +615,8 @@ const App: React.FC = () => {
 
                 if (isRelevant) {
                      if (currentNodeId === 'quiz_q6_prompt' || currentNodeId === 'quiz_q7_prompt') {
-                        const basePoints = QUIZ_POINTS[currentNodeId];
-                        const attempts = currentNodeId === 'quiz_q6_prompt' ? gameState.q6Attempts : gameState.q7Attempts;
-                        const penalty = (attempts - 1) * 10;
-                        
-                        let pointsToAdd = basePoints;
-                        if (gameState.streak > 0) {
-                            pointsToAdd += 20;
-                        }
-                        const finalPoints = Math.max(0, pointsToAdd - penalty);
-                        updateScore(finalPoints);
-                        
+                        // These questions no longer award points, but they do count as correct
+                        // for the final tally and for maintaining a streak.
                         setGameState(prev => ({
                             ...prev,
                             streak: prev.streak + 1,
