@@ -384,7 +384,7 @@ export const translations: Translations = {
     btn_very_cool: "Sangat menarik!",
     btn_thanks_clear: "Terima kasih, itu jelas!",
     btn_ask_more_major: "Saya ada soalan lain tentang ini.",
-    btn_ask_about_other_majors: "Saya ingin bertanya tentang jurusan lain juga",
+    btn_ask_about_other_majors: "Saya ingin bertanya tentang jurusan lain juga.",
     btn_got_it_thanks: "Faham, terima kasih!",
     btn_digital_habits: "Bagaimana tabiat digital saya mempengaruhi ESG?",
     btn_watch_video: "Tonton Video Pantas!",
