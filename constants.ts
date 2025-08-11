@@ -213,7 +213,8 @@ export const decisionTree: DecisionTree = {
         type: 'ANSWER',
         buttons: [
             { text: "btn_thanks_clear", nextNode: 'end_secondary_branch_career' },
-            { text: "btn_ask_more_major", nextNode: 'ask_more_major_prompt' }
+            { text: "btn_ask_more_major", nextNode: 'ask_more_major_prompt' },
+            { text: "btn_ask_about_other_majors", nextNode: 'degree_major_prompt'}
         ]
     },
     'ask_more_major_prompt': {
