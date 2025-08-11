@@ -154,7 +154,7 @@ export const translations: Translations = {
     btn_very_cool: "Very cool!",
     btn_thanks_clear: "Thanks, that's clear!",
     btn_ask_more_major: "I have another question about this.",
-    btn_ask_about_other_majors: "I would like to ask about other majors as well",
+    btn_ask_about_other_majors: "I would like to ask about other majors as well.",
     btn_got_it_thanks: "Got it, thanks!",
     btn_digital_habits: "How do my digital habits impact ESG?",
     btn_watch_video: "Watch a Quick Video!",
