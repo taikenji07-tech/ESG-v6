@@ -1,4 +1,5 @@
 
+
 import type { DecisionTree, Badge, WordSearchPoolItem, DragDropQuizNode, WordSearchQuizNode } from './types';
 
 export const BADGES: Badge[] = [
@@ -26,6 +27,7 @@ export const quizOrder = ['quiz_q1', 'quiz_q2', 'quiz_q3', 'quiz_q4', 'quiz_q5',
 
 export const progressNodes = new Set([
   'start',
+  'collect_full_name',
   'collect_email',
   'collect_university',
   'greeting',
@@ -55,6 +57,11 @@ export const decisionTree: DecisionTree = {
     'start': {
         text: "start_text",
         type: 'PROMPT',
+        nextNode: 'collect_full_name',
+    },
+    'collect_full_name': {
+        text: "collect_full_name_text",
+        type: 'PROMPT',
         nextNode: 'collect_email',
     },
     'collect_email': {
@@ -69,7 +76,6 @@ export const decisionTree: DecisionTree = {
     },
     'greeting': {
         text: "greeting_text",
-        isDynamic: true,
         type: 'QUESTION',
         buttons: [ { text: "btn_what_is_esg", nextNode: 'what_is_esg_answer' } ]
     },
