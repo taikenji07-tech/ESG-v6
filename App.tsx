@@ -9,6 +9,7 @@ import { CelebrationModal } from './CelebrationModal';
 import { DragDropQuiz } from './DragDropQuiz';
 import { WordSearchQuiz } from './WordSearchQuiz';
 import { ToastNotification } from './ToastNotification';
+import { ProgressMilestonePopup } from './ProgressMilestonePopup';
 import { decisionTree, quizOrder, progressNodes, totalProgressSteps, BADGES, WORD_SEARCH_POOL } from './constants';
 import { translations } from './translations';
 import type { Message, NodeId, DecisionTree, Node, Button, GameState, Badge, LoopQuestionNode, Language, DragDropQuizNode, WordSearchQuizNode } from './types';
@@ -151,6 +152,7 @@ const App: React.FC = () => {
     const [userAvatar, setUserAvatar] = useState<string>('avatar1');
     const [showCelebration, setShowCelebration] = useState(false);
     const [toast, setToast] = useState<string | null>(null);
+    const [milestoneText, setMilestoneText] = useState<string | null>(null);
 
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const dynamicResponseTextRef = useRef<string | null>(null);
@@ -691,11 +693,37 @@ const App: React.FC = () => {
     };
 
     const progressPercent = totalProgressSteps > 0 ? (gameState.visitedProgressNodes.size / totalProgressSteps) * 100 : 0;
+    const prevProgressPercentRef = useRef(progressPercent);
+
+    // Effect to trigger the milestone popup
+    useEffect(() => {
+        const oldProgress = prevProgressPercentRef.current;
+        const newProgress = progressPercent;
+        
+        let newText: string | null = null;
+        
+        // Check for crossing the 20% threshold
+        if (newProgress > 20 && oldProgress <= 20) {
+            newText = t('progress_bar_slaying_it');
+        }
+        // Check for crossing the 95% threshold
+        else if (newProgress >= 95 && oldProgress < 95) {
+            newText = t('progress_bar_almost_there');
+        }
+
+        if (newText) {
+            setMilestoneText(newText);
+        }
+
+        // Update the ref for the next render
+        prevProgressPercentRef.current = newProgress;
+    }, [progressPercent, t]);
 
     return (
         <>
             <BackgroundEffects />
             <ToastNotification message={toast} onClear={() => setToast(null)} />
+            <ProgressMilestonePopup text={milestoneText} onAnimationEnd={() => setMilestoneText(null)} />
 
             <div className="relative z-10 flex flex-col h-dvh">
                 <Header 
