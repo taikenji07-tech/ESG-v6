@@ -294,53 +294,58 @@ export const decisionTree: DecisionTree = {
             { id: 'G', labelKey: 'dd_item_G', correctItemId: 'item_G' },
         ],
         nextNode: 'quiz_q1_correct',
-        incorrectNextNode: 'quiz_incorrect'
+        incorrectNextNode: 'quiz_q1_incorrect'
     } as DragDropQuizNode,
     'quiz_q1_correct': { text: "quiz_q1_correct_text", isCorrect: true, type: 'ANSWER', buttons: [ { text: "btn_next_question", nextNode: 'quiz_q2' } ] },
+    'quiz_q1_incorrect': { text: "quiz_q1_incorrect_text", isCorrect: false, type: 'ANSWER', buttons: [ { text: "btn_continue", nextNode: 'determine_next_quiz_q' } ] },
     
     'quiz_q2': {
         text: "quiz_q2_text",
         type: 'QUESTION',
         buttons: [
             { text: "btn_not_esg_career_1", nextNode: 'quiz_q2_correct' },
-            { text: "btn_not_esg_career_2", nextNode: 'quiz_incorrect' },
-            { text: "btn_not_esg_career_3", nextNode: 'quiz_incorrect' }
+            { text: "btn_not_esg_career_2", nextNode: 'quiz_q2_incorrect' },
+            { text: "btn_not_esg_career_3", nextNode: 'quiz_q2_incorrect' }
         ]
     },
     'quiz_q2_correct': { text: "quiz_q2_correct_text", isCorrect: true, type: 'ANSWER', buttons: [ { text: "btn_next_question", nextNode: 'quiz_q3' } ] },
+    'quiz_q2_incorrect': { text: "quiz_q2_incorrect_text", isCorrect: false, type: 'ANSWER', buttons: [ { text: "btn_continue", nextNode: 'determine_next_quiz_q' } ] },
 
     'quiz_q3': {
         text: "quiz_q3_text",
         type: 'QUESTION',
         buttons: [
             { text: "btn_digital_habit_1", nextNode: 'quiz_q3_correct' },
-            { text: "btn_digital_habit_2", nextNode: 'quiz_incorrect' },
-            { text: "btn_digital_habit_3", nextNode: 'quiz_incorrect' }
+            { text: "btn_digital_habit_2", nextNode: 'quiz_q3_incorrect' },
+            { text: "btn_digital_habit_3", nextNode: 'quiz_q3_incorrect' }
         ]
     },
     'quiz_q3_correct': { text: "quiz_q3_correct_text", isCorrect: true, type: 'ANSWER', buttons: [ { text: "btn_next_question", nextNode: 'quiz_q4' } ] },
+    'quiz_q3_incorrect': { text: "quiz_q3_incorrect_text", isCorrect: false, type: 'ANSWER', buttons: [ { text: "btn_continue", nextNode: 'determine_next_quiz_q' } ] },
 
     'quiz_q4': {
         text: "quiz_q4_text",
         type: 'QUESTION',
         buttons: [
-            { text: "btn_governance_action_1", nextNode: 'quiz_incorrect' },
+            { text: "btn_governance_action_1", nextNode: 'quiz_q4_incorrect' },
             { text: "btn_governance_action_2", nextNode: 'quiz_q4_correct' },
-            { text: "btn_governance_action_3", nextNode: 'quiz_incorrect' }
+            { text: "btn_governance_action_3", nextNode: 'quiz_q4_incorrect' }
         ]
     },
     'quiz_q4_correct': { text: "quiz_q4_correct_text", isCorrect: true, type: 'ANSWER', buttons: [ { text: "btn_next_question", nextNode: 'quiz_q5' } ] },
+    'quiz_q4_incorrect': { text: "quiz_q4_incorrect_text", isCorrect: false, type: 'ANSWER', buttons: [ { text: "btn_continue", nextNode: 'determine_next_quiz_q' } ] },
 
     'quiz_q5': {
         text: "quiz_q5_text",
         type: 'QUESTION',
         buttons: [
-            { text: "btn_ripple_effect_1", nextNode: 'quiz_incorrect' },
+            { text: "btn_ripple_effect_1", nextNode: 'quiz_q5_incorrect' },
             { text: "btn_ripple_effect_2", nextNode: 'quiz_q5_correct' },
-            { text: "btn_ripple_effect_3", nextNode: 'quiz_incorrect' }
+            { text: "btn_ripple_effect_3", nextNode: 'quiz_q5_incorrect' }
         ]
     },
     'quiz_q5_correct': { text: "quiz_q5_correct_text", isCorrect: true, type: 'ANSWER', buttons: [ { text: "btn_next_question", nextNode: 'quiz_q6_prompt' } ] },
+    'quiz_q5_incorrect': { text: "quiz_q5_incorrect_text", isCorrect: false, type: 'ANSWER', buttons: [ { text: "btn_continue", nextNode: 'determine_next_quiz_q' } ] },
 
     'quiz_q6_prompt': {
         text: "quiz_q6_prompt_text",
@@ -375,7 +380,6 @@ export const decisionTree: DecisionTree = {
         nextNode: 'quiz_end'
     } as WordSearchQuizNode,
 
-    'quiz_incorrect': { text: "quiz_incorrect_text", isCorrect: false, type: 'ANSWER', buttons: [ { text: "btn_continue", nextNode: 'determine_next_quiz_q' } ] },
     'determine_next_quiz_q': { type: 'REDIRECT_QUIZ' },
     
     'quiz_end': {
