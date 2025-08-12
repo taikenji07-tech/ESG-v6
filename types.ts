@@ -121,6 +121,7 @@ export interface GameState {
     unlockedBadges: Set<string>;
     quizCorrectAnswers: number;
     userName: string;
+    certificateName: string;
     email: string;
     university: string;
     major: string;
