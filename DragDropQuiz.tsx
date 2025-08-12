@@ -15,6 +15,8 @@ type Placements = Record<string, string | null>;
 export const DragDropQuiz: React.FC<DragDropQuizProps> = ({ node, onComplete, language }) => {
     const t = (key: string) => translations[language][key] || key;
 
+    const shuffledTargets = useMemo(() => [...node.targets].sort(() => Math.random() - 0.5), [node.targets]);
+
     const initialPlacements = useMemo(() => node.targets.reduce((acc, target) => {
         acc[target.id] = null;
         return acc;
@@ -140,7 +142,7 @@ export const DragDropQuiz: React.FC<DragDropQuizProps> = ({ node, onComplete, la
         >
             {/* Drop Zones */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {node.targets.map(target => {
+                {shuffledTargets.map(target => {
                     const placedItem = node.items.find(item => item.id === placements[target.id]);
                     const isDragOver = dragOverTarget === target.id;
                     return (
@@ -152,7 +154,7 @@ export const DragDropQuiz: React.FC<DragDropQuizProps> = ({ node, onComplete, la
                             className={`dd-target dd-target-${target.id} ${isDragOver ? 'drag-over' : ''}`}
                             data-target-id={target.id}
                         >
-                            <h3 className="dd-target-label">{target.label}</h3>
+                            <div className="dd-target-label">{t(target.labelKey)}</div>
                             <div className="flex-grow flex items-center justify-center min-h-[4rem]">
                                 {placedItem ? renderDraggableItem(placedItem) : (
                                     <span className="text-sm text-text-dim">{t('Drop here')}</span>
