@@ -28,21 +28,20 @@ export const Header: React.FC<HeaderProps> = ({ score, streak, theme, onThemeTog
         <header className="header-bg z-20">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4">
                 <div className="flex items-center justify-between gap-4">
-                    {/* Left side: Title and RHB link */}
+                    {/* Left side: Title & Logo */}
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-md">
                             <SparklesIcon className="w-6 h-6 text-white" />
                         </div>
                         <div>
                             <h1 className="text-lg font-bold text-text-main">{t('header_title')}</h1>
-                            <a 
-                                href="https://www.rhbinsurance.com.my/" 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="text-xs text-text-dim hover:text-accent transition-colors"
-                            >
-                                by RHB Insurance
-                            </a>
+                            <div className="flex items-center mt-1">
+                                <img 
+                                    src="https://www.gmride.com.my/v2/wp-content/themes/bdid/img/logo-rhb.png" 
+                                    alt="RHB Insurance Logo" 
+                                    className="h-8"
+                                />
+                            </div>
                         </div>
                     </div>
 
