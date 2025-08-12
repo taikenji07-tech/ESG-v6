@@ -89,7 +89,10 @@ export const translations: Translations = {
     ask_more_esg_prompt_text: "Absolutely, I'm here to help. What would you like to know about ESG?",
     
     // Quiz
-    quiz_q1_text_dd: "Question 1: Match the concepts to the correct ESG pillar.",
+    quiz_q1_text_dd: "Question 1: Drag the pillar label (E, S, or G) to match its definition.",
+    dd_label_E: "E",
+    dd_label_S: "S",
+    dd_label_G: "G",
     dd_item_E: "Clean energy, reduced waste, and resource conservation.",
     dd_item_S: "Fair labor practices, community relations, and diversity.",
     dd_item_G: "Ethical leadership, transparency, and shareholder rights.",
@@ -318,7 +321,10 @@ export const translations: Translations = {
     ask_more_esg_prompt_text: "Sudah tentu, saya di sini untuk membantu. Apa yang ingin anda ketahui tentang ESG?",
     
     // Quiz
-    quiz_q1_text_dd: "Soalan 1: Padankan konsep kepada tonggak ESG yang betul.",
+    quiz_q1_text_dd: "Soalan 1: Seret label tonggak (E, S, atau G) untuk dipadankan dengan definisinya.",
+    dd_label_E: "E",
+    dd_label_S: "S",
+    dd_label_G: "G",
     dd_item_E: "Tenaga bersih, pengurangan sisa, dan pemuliharaan sumber.",
     dd_item_S: "Amalan buruh yang adil, hubungan komuniti, dan kepelbagaian.",
     dd_item_G: "Kepimpinan beretika, ketelusan, dan hak pemegang saham.",
