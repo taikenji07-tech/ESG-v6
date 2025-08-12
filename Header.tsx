@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { SparklesIcon, SunIcon, MoonIcon, StarIcon, ZapIcon, BookOpenCheckIcon, TargetIcon, TrophyIcon } from './Icons';
+import { SparklesIcon, SunIcon, MoonIcon, StarIcon, ZapIcon } from './Icons';
 import { Language, Badge } from './types';
 import { LearningProgressBar } from './TopProgressBar';
 
@@ -16,10 +17,10 @@ interface HeaderProps {
     progress: number;
 }
 
-const badgeIconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
-    knowledge: BookOpenCheckIcon,
-    master: TargetIcon,
-    flawless: TrophyIcon,
+const badgeImageMap: Record<string, string> = {
+    knowledge: 'https://cdn-icons-png.flaticon.com/128/10221/10221707.png',
+    master: 'https://cdn-icons-png.flaticon.com/128/3176/3176324.png',
+    flawless: 'https://cdn-icons-png.flaticon.com/128/17360/17360027.png',
 };
 
 export const Header: React.FC<HeaderProps> = ({ score, streak, theme, onThemeToggle, language, onLanguageChange, t, badges, unlockedBadges, progress }) => {
@@ -81,11 +82,11 @@ export const Header: React.FC<HeaderProps> = ({ score, streak, theme, onThemeTog
                 <div className="flex items-center justify-between gap-3">
                     <div className="badge-container">
                         {badges.map(badge => {
-                            const Icon = badgeIconMap[badge.id];
+                            const imageUrl = badgeImageMap[badge.id];
                             const isUnlocked = unlockedBadges.has(badge.id);
                             return (
                                 <div key={badge.id} className={`badge-icon ${isUnlocked ? `unlocked unlocked-${badge.id}` : 'grayscale'}`}>
-                                    <Icon />
+                                    <img src={imageUrl} alt={t(badge.tooltipKey)} className="w-full h-full object-contain" />
                                     <div className="badge-tooltip">{t(badge.tooltipKey)}</div>
                                 </div>
                             );
