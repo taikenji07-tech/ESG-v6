@@ -408,10 +408,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 52px;
-  height: 52px;
-  padding: 0;
-  border-radius: 50%;
+  padding: 10px 16px;
+  border-radius: 16px;
   font-size: 20px;
   font-weight: 700;
 }
@@ -425,35 +423,43 @@ body {
   box-shadow: 0 8px 20px var(--shadow-color);
 }
 
-.dd-target {
-  padding: 16px;
-  border-radius: 24px;
-  border: 2px dashed var(--border-color);
-  min-height: 8rem;
+.dd-explanation-box {
+  background-color: var(--surface-a);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-main);
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.dd-drop-zone {
+  width: 80px;
+  flex-shrink: 0;
+  border-radius: 16px;
+  border: 2px dashed var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s ease;
 }
 .dd-target-E { --dd-color: #4dd0e1; } /* Light Teal */
 .dd-target-S { --dd-color: #64b5f6; } /* Light Blue */
 .dd-target-G { --dd-color: #7986cb; } /* Indigo */
-.dd-target.drag-over {
+
+.dd-drop-zone.drag-over {
   border-color: var(--dd-color);
   background-color: color-mix(in srgb, var(--dd-color) 20%, transparent);
 }
-.dd-target-label {
-  font-size: 15px;
-  font-weight: 500;
-  text-align: left;
-  line-height: 1.4;
-  margin-bottom: 12px;
-  color: var(--text-main);
-  padding: 0 4px;
-}
-.dd-target .dd-item {
+
+.dd-drop-zone .dd-item {
   border-color: var(--dd-color);
   background-color: color-mix(in srgb, var(--dd-color) 30%, var(--surface-b));
 }
+
 .dd-submit-button {
   padding: 14px 28px;
   border-radius: 99px;
