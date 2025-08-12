@@ -97,28 +97,38 @@ export const translations: Translations = {
     dd_item_G: "Ethical leadership, transparency, and shareholder rights.",
     
     quiz_q1_correct_text: "Correct! You've matched them all perfectly.",
+    quiz_q1_incorrect_text: "Not quite. The correct matches are: **E** for Environmental (like clean energy), **S** for Social (like fair practices), and **G** for Governance (like ethical leadership). Let's move on!",
+    
     quiz_q2_text:
       "Question 2: Which of the following are NOT ESG related careers?",
     quiz_q2_correct_text:
       "You got it! While important, a food critic isn't a core ESG role.",
+    quiz_q2_incorrect_text: "That's not it. The correct answer is **Food Critic**. While Diversity Managers and Climate Specialists are core ESG roles, a food critic's job doesn't directly relate to ESG principles.",
+      
     quiz_q3_text:
       "Question 3: Which of these digital habits can reduce the environmental impact?",
     quiz_q3_correct_text:
       "Exactly! Streaming in SD instead of HD uses significantly less data and energy.",
+    quiz_q3_incorrect_text: "Good try, but the best answer is **streaming in SD**. Leaving your computer on and using the cloud constantly both consume significant energy. Streaming in Standard Definition is a simple way to reduce data and energy usage.",
+
     quiz_q4_text:
       "Question 4: According to the 'ESG in Everyday Life' section, which of these is an example of a 'Governance (G)' action?",
     quiz_q4_correct_text:
       "Perfect! Citing sources is an act of academic integrity, which is a core Governance principle.",
+    quiz_q4_incorrect_text: "Almost! The correct answer is **citing sources properly**. This is an act of integrity and transparency, which are key 'Governance' principles. The other options fall under 'Environmental' and 'Social'.",
+
     quiz_q5_text:
       "Question 5: In the 'Does what I do really matter?' section, what is the 'ripple effect' of bringing a reusable coffee cup?",
     quiz_q5_correct_text:
       "That's the one! Your action inspires a wider chain of events.",
+    quiz_q5_incorrect_text: "Close, but the 'ripple effect' described is about how **your action inspires others and leads to bigger changes**. It's not just about a personal benefit, but about creating a positive chain reaction.",
+
     quiz_q6_prompt_text:
       "Question 6 (Open-Ended): How much do you matter in saving our Earth?",
     quiz_q7_prompt_text:
       "Question 7 (Open-Ended): What is one action you will take to improve your ESG impact?",
     quiz_q8_text: "Final Question: Find the 7 sustainability words hidden in the grid! When you find a word, I'll tell you what it means. 🕵️‍♀️",
-    quiz_incorrect_text: "Not quite. Let's try the next one.",
+
     quiz_end_text:
       "Quiz complete! You got **{quizCorrectAnswers} out of 8** questions correct. Your final score is **{score} out of 1000 points**!\n\n🌍 **Fun ESG Fact:** Your interactions created about **{co2}g of CO₂**. That's like running an A/C for **{acMinutes} minutes** or driving a car for **{carKm} km**!\n\n{aiReminder}",
     final_thanks_no_quiz_text:
@@ -329,28 +339,38 @@ export const translations: Translations = {
     dd_item_G: "Kepimpinan beretika, ketelusan, dan hak pemegang saham.",
 
     quiz_q1_correct_text: "Betul! Anda telah memadankan kesemuanya dengan sempurna.",
+    quiz_q1_incorrect_text: "Tidak tepat. Padanan yang betul ialah: **E** untuk Alam Sekitar (seperti tenaga bersih), **S** untuk Sosial (seperti amalan adil), dan **G** untuk Tadbir Urus (seperti kepimpinan beretika). Jom teruskan!",
+    
     quiz_q2_text:
       "Soalan 2: Antara berikut, yang manakah BUKAN kerjaya berkaitan ESG?",
     quiz_q2_correct_text:
       "Tepat sekali! Walaupun penting, pengkritik makanan bukanlah peranan teras ESG.",
+    quiz_q2_incorrect_text: "Itu tidak betul. Jawapan yang betul ialah **Pengkritik Makanan**. Walaupun Pengurus Kepelbagaian dan Pakar Iklim adalah peranan teras ESG, kerja pengkritik makanan tidak berkaitan secara langsung dengan prinsip ESG.",
+      
     quiz_q3_text:
       "Soalan 3: Antara tabiat digital berikut, yang manakah dapat mengurangkan kesan alam sekitar?",
     quiz_q3_correct_text:
       "Betul! Menstrim dalam SD berbanding HD menggunakan data dan tenaga yang jauh lebih sedikit.",
+    quiz_q3_incorrect_text: "Cubaan yang baik, tetapi jawapan terbaik ialah **menstrim dalam SD**. Membiarkan komputer anda hidup dan sentiasa menggunakan storan awan kedua-duanya menggunakan tenaga yang banyak. Menstrim dalam Definisi Standard adalah cara mudah untuk mengurangkan penggunaan data dan tenaga.",
+
     quiz_q4_text:
       "Soalan 4: Berdasarkan bahagian 'ESG dalam Kehidupan Seharian', yang manakah contoh tindakan 'Tadbir Urus (G)'?",
     quiz_q4_correct_text:
       "Sempurna! Memetik sumber adalah satu tindakan integriti akademik, yang merupakan prinsip teras Tadbir Urus.",
+    quiz_q4_incorrect_text: "Hampir tepat! Jawapan yang betul ialah **memetik sumber dengan betul**. Ini adalah tindakan integriti dan ketelusan, yang merupakan prinsip utama 'Tadbir Urus'. Pilihan lain tergolong di bawah 'Alam Sekitar' dan 'Sosial'.",
+
     quiz_q5_text:
       "Soalan 5: Dalam bahagian 'Adakah tindakan saya penting?', apakah 'kesan riak' daripada membawa cawan kopi boleh guna semula?",
     quiz_q5_correct_text:
       "Itu yang betul! Tindakan anda memberi inspirasi kepada rantaian peristiwa yang lebih luas.",
+    quiz_q5_incorrect_text: "Hampir tepat, tetapi 'kesan riak' yang diterangkan adalah tentang bagaimana **tindakan anda memberi inspirasi kepada orang lain dan membawa kepada perubahan yang lebih besar**. Ia bukan hanya tentang faedah peribadi, tetapi tentang mewujudkan rantaian reaksi yang positif.",
+
     quiz_q6_prompt_text:
       "Soalan 6 (Terbuka): Sejauh manakah anda penting dalam menyelamatkan Bumi kita?",
     quiz_q7_prompt_text:
       "Soalan 7 (Terbuka): Apakah satu tindakan yang akan anda ambil untuk meningkatkan impak ESG anda?",
     quiz_q8_text: "Soalan Terakhir: Cari 7 perkataan kelestarian yang tersembunyi dalam grid! Apabila anda menjumpai satu perkataan, saya akan beritahu maksudnya. 🕵️‍♀️",
-    quiz_incorrect_text: "Tidak tepat. Mari cuba soalan seterusnya.",
+
     quiz_end_text:
       "Kuiz selesai! Anda mendapat **{quizCorrectAnswers} daripada 8** soalan dengan betul. Skor akhir anda ialah **{score} daripada 1000 mata**!\n\n🌍 **Fakta ESG Menarik:** Interaksi anda menghasilkan kira-kira **{co2}g CO₂**. Itu bersamaan dengan menghidupkan penghawa dingin selama **{acMinutes} minit** atau memandu kereta sejauh **{carKm} km**!\n\n{aiReminder}",
     final_thanks_no_quiz_text:
