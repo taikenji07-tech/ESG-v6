@@ -124,6 +124,7 @@ const App: React.FC = () => {
         unlockedBadges: new Set(),
         quizCorrectAnswers: 0,
         userName: '',
+        certificateName: '',
         email: '',
         university: '',
         major: '',
@@ -421,7 +422,7 @@ const App: React.FC = () => {
             
             setIsTyping(true);
             const submissionSuccessful = await submitToGoogleForm({
-                name: gameState.userName,
+                name: gameState.certificateName,
                 email: gameState.email,
                 university: gameState.university,
                 score: Math.round(gameState.score)
@@ -602,6 +603,8 @@ const App: React.FC = () => {
         
         if (currentNodeId === 'start') {
             setGameState(prev => ({...prev, userName: message}));
+        } else if (currentNodeId === 'collect_full_name') {
+            setGameState(prev => ({...prev, certificateName: message}));
         } else if (currentNodeId === 'collect_university') {
             setGameState(prev => ({...prev, university: message}));
         } else if (currentNodeId === 'quiz_q6_prompt') {
