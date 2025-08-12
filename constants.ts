@@ -284,14 +284,14 @@ export const decisionTree: DecisionTree = {
         text: "quiz_q1_text_dd",
         type: 'QUIZ_DRAG_DROP',
         items: [
-            { id: 'item_E', textKey: 'dd_item_E' },
-            { id: 'item_S', textKey: 'dd_item_S' },
-            { id: 'item_G', textKey: 'dd_item_G' },
+            { id: 'item_E', textKey: 'dd_label_E' },
+            { id: 'item_S', textKey: 'dd_label_S' },
+            { id: 'item_G', textKey: 'dd_label_G' },
         ],
         targets: [
-            { id: 'E', label: 'E', correctItemId: 'item_E' },
-            { id: 'S', label: 'S', correctItemId: 'item_S' },
-            { id: 'G', label: 'G', correctItemId: 'item_G' },
+            { id: 'E', labelKey: 'dd_item_E', correctItemId: 'item_E' },
+            { id: 'S', labelKey: 'dd_item_S', correctItemId: 'item_S' },
+            { id: 'G', labelKey: 'dd_item_G', correctItemId: 'item_G' },
         ],
         nextNode: 'quiz_q1_correct',
         incorrectNextNode: 'quiz_incorrect'
