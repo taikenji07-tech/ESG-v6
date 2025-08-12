@@ -107,3 +107,63 @@ export const submitToGoogleForm = async (data: { name: string; email: string; un
         return false;
     }
 };
+
+/**
+ * Validates an email address using the Gemini API.
+ * @param {string} email - The email string to validate.
+ * @returns {Promise<{ isValid: boolean; reason: string; email: string | null; }>} - A promise that resolves to the validation result.
+ */
+export const validateEmailWithAI = async (email: string): Promise<{ isValid: boolean; reason: string; email: string | null; }> => {
+  try {
+    const systemInstruction = `You are an expert email address validator. Your task is to analyze the user's input and determine if it is a valid email address.
+If it is valid, return isValid: true and a confirmation message.
+If it is invalid (e.g., missing '@', domain, or has typos like 'gamil.com'), return isValid: false and provide a brief, friendly reason why.
+If you can plausibly correct a typo (like 'user@gamil.com' to 'user@gmail.com'), provide the corrected email in the 'email' field.
+Respond ONLY with a JSON object with the following schema: { "isValid": boolean, "reason": string, "email": string | null }`;
+
+    const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: `Email to validate: "${email}"`,
+        config: {
+            systemInstruction: systemInstruction,
+            responseMimeType: "application/json",
+            responseSchema: {
+                type: Type.OBJECT,
+                properties: {
+                    isValid: {
+                        type: Type.BOOLEAN,
+                        description: "True if the email is valid, false otherwise."
+                    },
+                    reason: {
+                        type: Type.STRING,
+                        description: "A brief, friendly explanation for why the email is invalid, or a confirmation message if valid."
+                    },
+                    email: {
+                        type: Type.STRING,
+                        description: "The corrected email address if a plausible typo was found, otherwise the original email if valid, or null if invalid and uncorrectable."
+                    }
+                },
+                required: ["isValid", "reason"]
+            }
+        }
+    });
+
+    const jsonStr = response.text.trim();
+    const parsed = JSON.parse(jsonStr);
+
+    return {
+        isValid: parsed.isValid ?? false,
+        reason: parsed.reason ?? "Sorry, that doesn't look like a valid email. Please try again.",
+        email: parsed.email ?? null
+    };
+
+  } catch (error) {
+    console.error("Error calling Gemini API for email validation:", error);
+    // Fallback in case of API error. Assume it's invalid and ask user to re-enter.
+    return {
+        isValid: false,
+        reason: "I'm having a little trouble checking that email. Could you please enter it again?",
+        email: null
+    };
+  }
+};
