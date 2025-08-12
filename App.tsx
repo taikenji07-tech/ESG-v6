@@ -12,7 +12,7 @@ import { ToastNotification } from './ToastNotification';
 import { decisionTree, quizOrder, progressNodes, totalProgressSteps, BADGES, WORD_SEARCH_POOL } from './constants';
 import { translations } from './translations';
 import type { Message, NodeId, DecisionTree, Node, Button, GameState, Badge, LoopQuestionNode, Language, DragDropQuizNode, WordSearchQuizNode } from './types';
-import { getDynamicResponse, translateToMalay, submitToGoogleForm } from './geminiService';
+import { getDynamicResponse, translateToMalay, submitToGoogleForm, validateEmailWithAI } from './geminiService';
 
 const avatarIconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
     avatar1: Avatar1Icon,
@@ -569,10 +569,39 @@ const App: React.FC = () => {
 
         if (lastNode.type !== 'PROMPT') return;
         
+        if (currentNodeId === 'collect_email') {
+            setIsTyping(true);
+            try {
+                const { isValid, reason, email: correctedEmail } = await validateEmailWithAI(message);
+                
+                if (isValid) {
+                    const finalEmail = correctedEmail || message;
+                    setGameState(prev => ({ ...prev, email: finalEmail }));
+                    setCurrentNodeId(lastNode.nextNode);
+                } else {
+                    let responseText = reason;
+                    if (language === 'ms') {
+                        responseText = await translateToMalay(responseText);
+                    }
+                    addMessage({ sender: 'bot', text: responseText });
+                    setInputVisible(true);
+                }
+            } catch (error) {
+                console.error("Error during email validation:", error);
+                let errorMessage = "I had a little trouble processing that. Could you please try again?";
+                 if (language === 'ms') {
+                    errorMessage = await translateToMalay(errorMessage);
+                }
+                addMessage({ sender: 'bot', text: errorMessage });
+                setInputVisible(true);
+            } finally {
+                setIsTyping(false);
+            }
+            return;
+        }
+        
         if (currentNodeId === 'start') {
             setGameState(prev => ({...prev, userName: message}));
-        } else if (currentNodeId === 'collect_email') {
-            setGameState(prev => ({...prev, email: message}));
         } else if (currentNodeId === 'collect_university') {
             setGameState(prev => ({...prev, university: message}));
         } else if (currentNodeId === 'quiz_q6_prompt') {
