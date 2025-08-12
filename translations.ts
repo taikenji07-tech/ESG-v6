@@ -39,12 +39,11 @@ export const translations: Translations = {
     btn_close: "Close",
 
     // Decision Tree Nodes
-    start_text:
-      "Hiii! 👋 I'm your super friendly guide to all things ESG! I'm so excited to chat with you. To make this extra personal, write down your full name!",
-    collect_email_text: "What's your email address?",
+    start_text: "Hiii! 👋 I'm your super friendly guide to all things ESG! I'm so excited to chat with you. To start, what should I call you?",
+    collect_full_name_text: "It's a pleasure to meet you, **{userName}**! For the certificate we'll issue at the end, please provide your full name as you'd like it to appear.",
+    collect_email_text: "Thank you! And what's your email address? Please double-check it, as we'll send your certificate here.",
     collect_university_text: "Which university are you from?",
-    greeting_text:
-      "It's so lovely to meet you, **{userName}**! 🎉 Let's dive in and learn some amazing things together. First up... what even **is** ESG?",
+    greeting_text: "Awesome, we're all set, **{userName}**! Let's dive in and learn some amazing things together. First up... what even **is** ESG?",
     what_is_esg_answer_text:
       "ESG = **Environmental, Social & Governance.**\n\nIt’s a framework for how we care for the planet 🌍, people 🤝, and systems 🏛️.\n\n- **Environmental**: Clean energy, less waste\n- **Social**: Fairness, diversity, respect\n- **Governance**: Ethics, transparency, good leadership\n\nESG matters because what you do – what you buy, how you learn, how you treat others – helps shape the future.",
     main_loop_text: "What else about ESG can I know?",
@@ -269,12 +268,11 @@ export const translations: Translations = {
     btn_close: "Tutup",
 
     // Decision Tree Nodes
-    start_text:
-      "Hiii! 👋 Saya panduan super mesra anda untuk semua tentang ESG! Saya sangat teruja untuk berbual dengan anda. Untuk menjadikannya lebih peribadi, apakah nama panggilan anda?",
-    collect_email_text: "Apakah alamat e-mel anda?",
+    start_text: "Hai! 👋 Saya panduan mesra anda untuk semua perkara ESG. Saya sangat teruja untuk berbual dengan anda. Sebagai permulaan, saya patut panggil anda apa?",
+    collect_full_name_text: "Gembira bertemu dengan anda, **{userName}**! Untuk sijil yang akan kami keluarkan nanti, sila berikan nama penuh anda seperti yang anda mahu ia tertera.",
+    collect_email_text: "Terima kasih! Dan apakah alamat e-mel anda? Sila semak semula, kerana kami akan menghantar sijil anda ke sini.",
     collect_university_text: "Anda dari universiti mana?",
-    greeting_text:
-      "Sangat gembira bertemu dengan anda, **{userName}**! 🎉 Jom kita mula dan belajar perkara-perkara hebat bersama. Pertama sekali... apa sebenarnya *ESG* tu?",
+    greeting_text: "Baiklah, semua sudah sedia, **{userName}**! Jom kita mula dan belajar perkara-perkara hebat bersama. Pertama sekali... apa sebenarnya *ESG* tu?",
     what_is_esg_answer_text:
       "ESG = **Alam Sekitar, Sosial & Tadbir Urus.**\n\nIa adalah rangka kerja tentang cara kita menjaga planet 🌍, manusia 🤝, dan sistem 🏛️.\n\n- **Alam Sekitar**: Tenaga bersih, kurangkan sisa\n- **Sosial**: Keadilan, kepelbagaian, hormat-menghormati\n- **Tadbir Urus**: Etika, ketelusan, kepimpinan yang baik\n\nESG penting kerana apa yang anda lakukan – apa yang anda beli, cara anda belajar, cara anda melayan orang lain – membantu membentuk masa depan.",
     main_loop_text: "Apa lagi yang boleh saya tahu tentang ESG?",
