@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { TrophyIcon } from './Icons';
 
 interface CelebrationModalProps {
   score: number;
@@ -9,12 +8,14 @@ interface CelebrationModalProps {
   t: (key: string, replacements?: Record<string, string | number>) => string;
 }
 
+const trophyImageUrl = 'https://cdn-icons-png.flaticon.com/128/17360/17360027.png';
+
 export const CelebrationModal: React.FC<CelebrationModalProps> = ({ score, onClose, onRestart, t }) => {
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 backdrop-blur-sm p-4">
       <div className="celebration-modal relative w-full max-w-md bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl shadow-2xl text-center p-8 overflow-hidden border border-white/10">
         <div className="relative z-10">
-          <TrophyIcon className="w-20 h-20 text-yellow-400 mx-auto mb-4 drop-shadow-lg" />
+          <img src={trophyImageUrl} alt="Trophy" className="w-20 h-20 mx-auto mb-4 drop-shadow-lg object-contain" />
           <h2 className="text-3xl font-bold text-white mb-2 celebration-title-glow">{t('celebration_title')}</h2>
           <p className="text-slate-300 mb-6">{t('celebration_subtitle')}</p>
           <div className="mb-8">
