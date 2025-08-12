@@ -30,9 +30,7 @@ export const Header: React.FC<HeaderProps> = ({ score, streak, theme, onThemeTog
                 <div className="flex items-center justify-between gap-4">
                     {/* Left side: Title & Logo */}
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-md">
-                            <SparklesIcon className="w-6 h-6 text-white" />
-                        </div>
+                        <img src="https://cdn-icons-png.flaticon.com/128/6540/6540769.png" alt="ESG Guide Icon" className="w-10 h-10" />
                         <div>
                             <h1 className="text-lg font-bold text-text-main">{t('header_title')}</h1>
                             <div className="flex items-center mt-1">
