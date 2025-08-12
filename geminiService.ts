@@ -1,6 +1,7 @@
 
 
 import { GoogleGenAI, Type } from "@google/genai";
+import type { Language } from './types';
 
 // Ensure the API key is available in the environment variables
 if (!process.env.API_KEY) {
@@ -166,4 +167,42 @@ Respond ONLY with a JSON object with the following schema: { "isValid": boolean,
         email: null
     };
   }
+};
+
+/**
+ * Generates a thoughtful reminder about the environmental impact of using AI.
+ * @param {number} co2 - The estimated CO2 generated during the session.
+ * @param {Language} language - The target language ('en' or 'ms').
+ * @returns {Promise<string>} - A promise that resolves to the reminder text.
+ */
+export const getAIImpactReminder = async (co2: number, language: Language): Promise<string> => {
+    try {
+        const languageName = language === 'ms' ? 'Malay' : 'English';
+        const systemInstruction = `You are a friendly, encouraging AI assistant for students. Your goal is to write a short, single-paragraph closing remark for a chatbot session about ESG.
+The user just completed a chat session that generated approximately ${co2.toFixed(1)}g of CO2.
+Your remark should:
+1. Acknowledge this small environmental cost in a friendly, non-judgmental way.
+2. Gently remind the user that all digital activities, including using powerful AI like this, have a real-world footprint.
+3. End on a positive and empowering note, encouraging them to be mindful and deliberate in their use of technology.
+Keep it concise, warm, and inspiring. Do not use markdown or special formatting.
+The final output must be in ${languageName}.`;
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: "Generate the closing remark now.",
+            config: {
+                systemInstruction: systemInstruction,
+                temperature: 0.7
+            }
+        });
+
+        return response.text.trim();
+    } catch (error) {
+        console.error("Error getting AI impact reminder:", error);
+        // Provide a graceful fallback message that still conveys the point
+        if (language === 'ms') {
+            return "Setiap klik menyumbang kepada jejak digital kita. Mari kita gunakan teknologi dengan penuh kesedaran dan untuk kebaikan!";
+        }
+        return "Every click contributes to our digital footprint. Let's use technology mindfully and for good!";
+    }
 };
