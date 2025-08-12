@@ -1,4 +1,3 @@
-
 export type Translation = Record<string, string>;
 
 export type Translations = {
@@ -121,9 +120,9 @@ export const translations: Translations = {
     quiz_q8_text: "Final Question: Find the 7 sustainability words hidden in the grid! When you find a word, I'll tell you what it means. 🕵️‍♀️",
     quiz_incorrect_text: "Not quite. Let's try the next one.",
     quiz_end_text:
-      "Quiz complete! You got **{quizCorrectAnswers} out of 8** questions correct. Your final score is **{score} out of 1000 points**!\n\n🌍 **Fun ESG Fact:** Your interactions in this chat created about **{co2}g of CO₂** — equivalent to running an air conditioner for **{acMinutes} minutes**!",
+      "Quiz complete! You got **{quizCorrectAnswers} out of 8** questions correct. Your final score is **{score} out of 1000 points**!\n\n🌍 **Fun ESG Fact:** Your interactions created about **{co2}g of CO₂**. That's like running an A/C for **{acMinutes} minutes** or driving a car for **{carKm} km**!\n\n{aiReminder}",
     final_thanks_no_quiz_text:
-      "No problem, {userName}! Your final score is **{score} out of 1000 points**. Thanks for learning with me today. Keep making a positive impact! ✨\n\n🌍 **Fun ESG Fact:** Your interactions in this chat created about **{co2}g of CO₂** — equivalent to running an air conditioner for **{acMinutes} minutes**!",
+      "No problem, {userName}! Your final score is **{score} out of 1000 points**. Thanks for learning with me today. ✨\n\n🌍 **Fun ESG Fact:** Your interactions created about **{co2}g of CO₂**. That's like running an A/C for **{acMinutes} minutes** or driving a car for **{carKm} km**!\n\n{aiReminder}",
     post_certificate_text: "Your details have been submitted successfully! Congratulations again. What would you like to do next?",
     form_submission_error_text: "I'm sorry, there was an error submitting your information. Please try clicking the button again.",
     end_curriculum_text: "Thanks for learning with me! It was great chatting with you. Feel free to start over any time. Goodbye! 👋",
@@ -353,9 +352,9 @@ export const translations: Translations = {
     quiz_q8_text: "Soalan Terakhir: Cari 7 perkataan kelestarian yang tersembunyi dalam grid! Apabila anda menjumpai satu perkataan, saya akan beritahu maksudnya. 🕵️‍♀️",
     quiz_incorrect_text: "Tidak tepat. Mari cuba soalan seterusnya.",
     quiz_end_text:
-      "Kuiz selesai! Anda mendapat **{quizCorrectAnswers} daripada 8** soalan dengan betul. Skor akhir anda ialah **{score} daripada 1000 mata**!\n\n🌍 **Fakta ESG Menarik:** Interaksi anda dalam sembang ini menghasilkan kira-kira **{co2}g CO₂** — bersamaan dengan menghidupkan penghawa dingin selama **{acMinutes} minit**!",
+      "Kuiz selesai! Anda mendapat **{quizCorrectAnswers} daripada 8** soalan dengan betul. Skor akhir anda ialah **{score} daripada 1000 mata**!\n\n🌍 **Fakta ESG Menarik:** Interaksi anda menghasilkan kira-kira **{co2}g CO₂**. Itu bersamaan dengan menghidupkan penghawa dingin selama **{acMinutes} minit** atau memandu kereta sejauh **{carKm} km**!\n\n{aiReminder}",
     final_thanks_no_quiz_text:
-      "Tidak mengapa, {userName}! Skor akhir anda ialah **{score} daripada 1000 mata**. Terima kasih kerana belajar bersama saya hari ini. Teruskan memberi impak positif! ✨\n\n🌍 **Fakta ESG Menarik:** Interaksi anda dalam sembang ini menghasilkan kira-kira **{co2}g CO₂** — bersamaan dengan menghidupkan penghawa dingin selama **{acMinutes} minit**!",
+      "Tidak mengapa, {userName}! Skor akhir anda ialah **{score} daripada 1000 mata**. Terima kasih kerana belajar bersama saya hari ini. ✨\n\n🌍 **Fakta ESG Menarik:** Interaksi anda menghasilkan kira-kira **{co2}g CO₂**. Itu bersamaan dengan menghidupkan penghawa dingin selama **{acMinutes} minit** atau memandu kereta sejauh **{carKm} km**!\n\n{aiReminder}",
     post_certificate_text: "Maklumat anda telah berjaya dihantar! Tahniah sekali lagi. Apa yang anda ingin lakukan seterusnya?",
     form_submission_error_text: "Maaf, terdapat ralat semasa menghantar maklumat anda. Sila cuba klik butang itu sekali lagi.",
     end_curriculum_text: "Terima kasih kerana belajar dengan saya! Seronok berbual dengan anda. Sila mulakan semula bila-bila masa. Selamat tinggal! 👋",
