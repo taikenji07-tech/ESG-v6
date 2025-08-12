@@ -1,4 +1,5 @@
 
+
 /* ------------------------------ */
 /*      Blue UI Design System     */
 /* ------------------------------ */
@@ -397,17 +398,22 @@ body {
   border: 1px solid var(--border-color);
 }
 .dd-item {
-  padding: 10px 20px;
-  border-radius: 99px;
   cursor: grab;
   transition: all 0.2s ease;
-  font-size: 14px;
-  font-weight: 600;
   background-color: var(--surface-b);
   color: var(--text-main);
   border: 1px solid var(--border-color);
   box-shadow: 0 3px 6px var(--shadow-color);
-  touch-action: none; /* Prevents scrolling on touch devices */
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border-radius: 50%;
+  font-size: 20px;
+  font-weight: 700;
 }
 .dd-item:active {
   cursor: grabbing;
@@ -436,11 +442,13 @@ body {
   background-color: color-mix(in srgb, var(--dd-color) 20%, transparent);
 }
 .dd-target-label {
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  line-height: 1.4;
   margin-bottom: 12px;
-  color: var(--dd-color);
+  color: var(--text-main);
+  padding: 0 4px;
 }
 .dd-target .dd-item {
   border-color: var(--dd-color);
