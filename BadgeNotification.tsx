@@ -1,7 +1,6 @@
 
 import React, { useMemo } from 'react';
 import type { Badge, Language } from './types';
-import { BookOpenCheckIcon, TargetIcon, TrophyIcon } from './Icons';
 
 interface BadgeNotificationProps {
     badge: Badge | null;
@@ -9,10 +8,10 @@ interface BadgeNotificationProps {
     t: (key: string, replacements?: Record<string, string | number>) => string;
 }
 
-const iconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
-    'knowledge': BookOpenCheckIcon,
-    'master': TargetIcon,
-    'flawless': TrophyIcon,
+const badgeImageMap: Record<string, string> = {
+    knowledge: 'https://cdn-icons-png.flaticon.com/128/10221/10221707.png',
+    master: 'https://cdn-icons-png.flaticon.com/128/3176/3176324.png',
+    flawless: 'https://cdn-icons-png.flaticon.com/128/17360/17360027.png',
 };
 
 const Confetti: React.FC = () => {
@@ -38,7 +37,7 @@ const Confetti: React.FC = () => {
 export const BadgeNotification: React.FC<BadgeNotificationProps> = ({ badge, t }) => {
     const isVisible = !!badge;
 
-    const IconComponent = badge ? iconMap[badge.id] || TrophyIcon : TrophyIcon;
+    const imageUrl = badge ? badgeImageMap[badge.id] : '';
     const title = badge ? t(badge.nameKey) : '';
 
     return (
@@ -50,7 +49,7 @@ export const BadgeNotification: React.FC<BadgeNotificationProps> = ({ badge, t }
             <div className="badge-notification relative p-4 rounded-2xl text-white shadow-lg">
                  {isVisible && <Confetti />}
                 <div className="relative flex items-center gap-4">
-                    <IconComponent className="w-12 h-12 flex-shrink-0 text-white drop-shadow-lg" />
+                    {imageUrl && <img src={imageUrl} alt={title} className="w-12 h-12 flex-shrink-0 drop-shadow-lg object-contain" />}
                     <div className="font-bold text-xl leading-tight">{title}</div>
                 </div>
             </div>
