@@ -12,7 +12,7 @@ import { ToastNotification } from './ToastNotification';
 import { decisionTree, quizOrder, progressNodes, totalProgressSteps, BADGES, WORD_SEARCH_POOL } from './constants';
 import { translations } from './translations';
 import type { Message, NodeId, DecisionTree, Node, Button, GameState, Badge, LoopQuestionNode, Language, DragDropQuizNode, WordSearchQuizNode } from './types';
-import { getDynamicResponse, translateToMalay, submitToGoogleForm, validateEmailWithAI } from './geminiService';
+import { getDynamicResponse, translateToMalay, submitToGoogleForm, validateEmailWithAI, getAIImpactReminder } from './geminiService';
 
 const avatarIconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
     avatar1: Avatar1Icon,
@@ -300,9 +300,7 @@ const App: React.FC = () => {
             }
         }
         
-        const typingTimer = setTimeout(() => {
-            setIsTyping(false);
-            
+        const typingTimer = setTimeout(async () => {
             let messageText: string;
             const replacements: Record<string, string | number> = {
                 userName: gameState.userName,
@@ -312,12 +310,22 @@ const App: React.FC = () => {
             };
 
             if (currentNodeId === 'quiz_end' || currentNodeId === 'final_thanks_no_quiz') {
-                const co2 = (userInteractionCount.current * 0.2).toFixed(1);
-                const acMinutes = Math.round(parseFloat(co2) / (203 / 30));
-                replacements.co2 = co2;
+                const totalCo2 = userInteractionCount.current * 2.5;
+                const acMinutes = Math.round(totalCo2 / 6);
+                const carKm = (totalCo2 / 200).toFixed(2);
+                
+                replacements.co2 = totalCo2.toFixed(1);
                 replacements.acMinutes = acMinutes;
+                replacements.carKm = carKm;
+
+                // Keep typing indicator on while we fetch the AI reminder
+                setIsTyping(true);
+                const aiReminder = await getAIImpactReminder(totalCo2, language);
+                replacements.aiReminder = aiReminder;
             }
             
+            setIsTyping(false);
+
             if (node.isDynamic && dynamicResponseTextRef.current) {
                 messageText = dynamicResponseTextRef.current
                     .replace(/{userName}/g, gameState.userName)
