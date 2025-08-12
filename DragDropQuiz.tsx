@@ -1,5 +1,4 @@
 
-
 import React, { useState, useMemo } from 'react';
 import type { DragDropQuizNode, Language } from './types';
 import { translations } from './translations';
@@ -25,6 +24,15 @@ export const DragDropQuiz: React.FC<DragDropQuizProps> = ({ node, onComplete, la
     const [placements, setPlacements] = useState<Placements>(initialPlacements);
     const [draggedItem, setDraggedItem] = useState<string | null>(null);
     const [dragOverTarget, setDragOverTarget] = useState<string | null>(null);
+    
+    // New state for the touch "ghost" element to provide visual feedback during drag
+    const [ghost, setGhost] = useState<{
+        itemId: string;
+        x: number;
+        y: number;
+        width: number;
+        height: number;
+    } | null>(null);
 
     const shuffledItems = useMemo(() => [...node.items].sort(() => Math.random() - 0.5), [node.items]);
     const unplacedItems = shuffledItems.filter(item => !Object.values(placements).includes(item.id));
@@ -49,7 +57,7 @@ export const DragDropQuiz: React.FC<DragDropQuizProps> = ({ node, onComplete, la
         setPlacements(newPlacements);
     };
 
-    // --- Mouse Event Handlers ---
+    // --- Mouse Event Handlers (Unchanged) ---
     const handleDragStart = (e: React.DragEvent<HTMLDivElement>, itemId: string) => {
         setDraggedItem(itemId);
         e.dataTransfer.effectAllowed = 'move';
@@ -69,35 +77,47 @@ export const DragDropQuiz: React.FC<DragDropQuizProps> = ({ node, onComplete, la
     
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
     const handleDragEnter = (targetId: string) => {
-        if (draggedItem) { // Only set drag over if an item is being dragged
+        if (draggedItem) {
            setDragOverTarget(targetId);
         }
     };
     const handleDragLeave = () => setDragOverTarget(null);
 
-    // --- Touch Event Handlers ---
-    const handleTouchStart = (itemId: string) => {
+    // --- Touch Event Handlers (Enhanced for better UX) ---
+    const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>, itemId: string) => {
+        const touch = e.touches[0];
+        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
         setDraggedItem(itemId);
+        setGhost({
+            itemId,
+            x: touch.clientX,
+            y: touch.clientY,
+            width: rect.width,
+            height: rect.height,
+        });
     };
 
     const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-        if (!draggedItem) return;
+        if (!draggedItem || !ghost) return;
         
-        // This prevents the page from scrolling, which is crucial for a good UX.
+        // Prevent page scrolling while dragging an item
         if (e.cancelable) {
             e.preventDefault();
         }
         
         const touch = e.touches[0];
+        
+        // Update ghost position to follow the finger
+        setGhost(prev => prev ? { ...prev, x: touch.clientX, y: touch.clientY } : null);
+
+        // Find the element under the touch point
         const elementUnderTouch = document.elementFromPoint(touch.clientX, touch.clientY);
 
         if (elementUnderTouch) {
             const dropTarget = elementUnderTouch.closest('.dd-target, .dd-item-source');
             if (dropTarget && dropTarget instanceof HTMLElement) {
                 const targetId = dropTarget.dataset.targetId;
-                 if (targetId) {
-                    setDragOverTarget(targetId);
-                }
+                setDragOverTarget(targetId || null);
             } else {
                 setDragOverTarget(null);
             }
@@ -108,8 +128,10 @@ export const DragDropQuiz: React.FC<DragDropQuizProps> = ({ node, onComplete, la
         if (draggedItem && dragOverTarget) {
             performDrop(dragOverTarget);
         }
+        // Cleanup state
         setDraggedItem(null);
         setDragOverTarget(null);
+        setGhost(null);
     };
 
     const handleCheckAnswer = () => {
@@ -119,14 +141,13 @@ export const DragDropQuiz: React.FC<DragDropQuizProps> = ({ node, onComplete, la
 
     const allPlaced = unplacedItems.length === 0;
     
-    // Helper to render draggable items
     const renderDraggableItem = (item: typeof node.items[0]) => (
         <div
             key={item.id}
             draggable
             onDragStart={(e) => handleDragStart(e, item.id)}
             onDragEnd={handleDragEnd}
-            onTouchStart={() => handleTouchStart(item.id)}
+            onTouchStart={(e) => handleTouchStart(e, item.id)}
             className={`dd-item ${draggedItem === item.id ? 'dragging' : ''}`}
         >
             {t(item.textKey)}
@@ -140,6 +161,24 @@ export const DragDropQuiz: React.FC<DragDropQuizProps> = ({ node, onComplete, la
             onTouchEnd={handleTouchEnd}
             onDragLeave={handleDragLeave}
         >
+            {/* Ghost element for touch drag feedback */}
+            {ghost && (
+                <div
+                    className="dd-item fixed pointer-events-none z-50"
+                    style={{
+                        width: `${ghost.width}px`,
+                        height: `${ghost.height}px`,
+                        left: `${ghost.x}px`,
+                        top: `${ghost.y}px`,
+                        transform: `translate(-50%, -50%) scale(1.1)`,
+                        boxShadow: '0 8px 20px var(--shadow-color)',
+                        opacity: 0.95,
+                    }}
+                >
+                    {t(node.items.find(i => i.id === ghost.itemId)!.textKey)}
+                </div>
+            )}
+
             {/* Drop Zones */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {shuffledTargets.map(target => {
