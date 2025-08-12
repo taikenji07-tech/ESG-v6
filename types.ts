@@ -59,8 +59,8 @@ export interface DragDropQuizItem {
 }
 
 export interface DragDropQuizTarget {
-    id: 'E' | 'S' | 'G';
-    label: string;
+    id: string;
+    labelKey: string;
     correctItemId: string;
 }
 
