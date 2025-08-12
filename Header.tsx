@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { SparklesIcon, SunIcon, MoonIcon, StarIcon, ZapIcon, BookOpenCheckIcon, TargetIcon, TrophyIcon } from './Icons';
 import { Language, Badge } from './types';
@@ -79,7 +78,7 @@ export const Header: React.FC<HeaderProps> = ({ score, streak, theme, onThemeTog
                 </div>
 
                 {/* Bottom part: Stats */}
-                <div className="flex items-center justify-end gap-3">
+                <div className="flex items-center justify-between gap-3">
                     <div className="badge-container">
                         {badges.map(badge => {
                             const Icon = badgeIconMap[badge.id];
@@ -92,16 +91,18 @@ export const Header: React.FC<HeaderProps> = ({ score, streak, theme, onThemeTog
                             );
                         })}
                     </div>
-                    <div className="score-display px-3 py-1 rounded-full flex items-center gap-1.5 text-xs">
-                        <StarIcon className="w-3.5 h-3.5 text-amber-500" />
-                        <span className="font-medium">{score}</span>
-                    </div>
-                    {streak > 0 && (
-                        <div className="streak-counter px-3 py-1 rounded-full text-white flex items-center gap-1.5 text-xs">
-                            <ZapIcon className="w-3.5 h-3.5" />
-                            <span className="font-bold">{streak}</span>
+                    <div className="flex items-center gap-3">
+                        <div className="score-display px-3 py-1 rounded-full flex items-center gap-1.5 text-xs">
+                            <StarIcon className="w-3.5 h-3.5 text-amber-500" />
+                            <span className="font-medium">{score}</span>
                         </div>
-                    )}
+                        {streak > 0 && (
+                            <div className="streak-counter px-3 py-1 rounded-full text-white flex items-center gap-1.5 text-xs">
+                                <ZapIcon className="w-3.5 h-3.5" />
+                                <span className="font-bold">{streak}</span>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </header>
