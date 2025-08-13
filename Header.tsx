@@ -34,8 +34,13 @@ export const Header: React.FC<HeaderProps> = ({ score, streak, theme, onThemeTog
             <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4">
                 <div className="flex items-center justify-between gap-4">
                     {/* Left side: Title & Logo */}
-                    <div className="flex items-center">
-                        <img src={logoUrl} alt="ESG Student Guide by RHB" className="h-14" />
+                    <div className="flex flex-col">
+                        <a href="https://www.maybank.com/" target="_blank" rel="noopener noreferrer" aria-label="Brought to you by Maybank">
+                            <img src="https://i.imgur.com/YEr2agc.png" alt="Brought to you by Maybank" className="h-auto w-24" />
+                        </a>
+                        <a href="https://www.rhbinsurance.com.my/" target="_blank" rel="noopener noreferrer" aria-label="ESG Student Guide by RHB">
+                            <img src={logoUrl} alt="ESG Student Guide by RHB" className="mt-2 h-14" />
+                        </a>
                     </div>
 
                     {/* Right side: Toggles */}
