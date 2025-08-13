@@ -4,7 +4,7 @@ import type { DecisionTree, Badge, WordSearchPoolItem, DragDropQuizNode, WordSea
 
 export const BADGES: Badge[] = [
     { id: 'knowledge', nameKey: 'badge_big_brain_name', descriptionKey: 'badge_unlocked_desc', tooltipKey: 'badge_big_brain_tooltip', score: 200, icon: 'knowledge' },
-    { id: 'master', nameKey: 'badge_ate_quiz_name', descriptionKey: 'badge_unlocked_desc', tooltipKey: 'badge_ate_quiz_tooltip', score: 800, icon: 'master' },
+    { id: 'master', nameKey: 'badge_ate_quiz_name', descriptionKey: 'badge_unlocked_desc', tooltipKey: 'badge_ate_quiz_tooltip', score: 600, icon: 'master' },
     { id: 'flawless', nameKey: 'badge_certified_legend_name', descriptionKey: 'badge_unlocked_desc', tooltipKey: 'badge_certified_legend_tooltip', score: 1000, icon: 'flawless' },
 ];
 
