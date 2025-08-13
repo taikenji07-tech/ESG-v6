@@ -23,18 +23,6 @@ export const ZapIcon: React.FC<IconProps> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
 );
 
-export const BotIcon: React.FC<IconProps> = (props) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-        <rect x="5" y="7" width="14" height="12" rx="4" />
-        <circle cx="9.5" cy="12" r="1.5" fill="currentColor" strokeWidth="0" />
-        <circle cx="14.5" cy="12" r="1.5" fill="currentColor" strokeWidth="0" />
-        <path d="M12 7V4" />
-        <circle cx="12" cy="3" r="1" fill="currentColor" strokeWidth="0" />
-        <path d="M9.5 15.5a3 3 0 0 0 5 0" />
-    </svg>
-);
-
-
 export const SendIcon: React.FC<IconProps> = (props) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <path d="m3 3 3 9-3 9 19-9Z"/>
