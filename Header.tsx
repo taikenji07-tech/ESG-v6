@@ -36,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({ score, streak, theme, onThemeTog
                             <h1 className="text-lg font-bold text-text-main">{t('header_title')}</h1>
                             <div className="flex items-center mt-1">
                                 <img 
-                                    src="https://www.gmride.com.my/v2/wp-content/themes/bdid/img/logo-rhb.png" 
+                                    src="https://i.imgur.com/YEr2agc.png" 
                                     alt="RHB Insurance Logo" 
                                     className="h-8"
                                 />
