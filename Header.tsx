@@ -25,23 +25,17 @@ const badgeImageMap: Record<string, string> = {
 };
 
 export const Header: React.FC<HeaderProps> = ({ score, streak, theme, onThemeToggle, language, onLanguageChange, t, badges, unlockedBadges, progress }) => {
+    const logoUrl = theme === 'light' 
+        ? 'https://i.imgur.com/Txai8Wa.png' 
+        : 'https://i.imgur.com/1CYHtVd.png';
+
     return (
         <header className="header-bg z-20">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4">
                 <div className="flex items-center justify-between gap-4">
                     {/* Left side: Title & Logo */}
-                    <div className="flex items-center gap-3">
-                        <img src="https://i.imgur.com/YAKWkLu.png" alt="ESG Guide Icon" className="w-16 h-16" />
-                        <div>
-                            <h1 className="text-lg font-bold text-text-main">{t('header_title')}</h1>
-                            <div className="flex items-center mt-1">
-                                <img 
-                                    src="https://i.imgur.com/YEr2agc.png" 
-                                    alt="RHB Insurance Logo" 
-                                    className="h-8"
-                                />
-                            </div>
-                        </div>
+                    <div className="flex items-center">
+                        <img src={logoUrl} alt="ESG Student Guide by RHB" className="h-14" />
                     </div>
 
                     {/* Right side: Toggles */}
