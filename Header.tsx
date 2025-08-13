@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { SparklesIcon, SunIcon, MoonIcon, StarIcon, ZapIcon } from './Icons';
 import { Language, Badge } from './types';
@@ -30,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({ score, streak, theme, onThemeTog
                 <div className="flex items-center justify-between gap-4">
                     {/* Left side: Title & Logo */}
                     <div className="flex items-center gap-3">
-                        <img src="https://cdn-icons-png.flaticon.com/128/6540/6540769.png" alt="ESG Guide Icon" className="w-10 h-10" />
+                        <img src="https://i.imgur.com/YAKWkLu.png" alt="ESG Guide Icon" className="w-16 h-16" />
                         <div>
                             <h1 className="text-lg font-bold text-text-main">{t('header_title')}</h1>
                             <div className="flex items-center mt-1">
