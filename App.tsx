@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Header } from './Header';
 import { BackgroundEffects } from './BackgroundEffects';
-import { BotIcon, SendIcon, Avatar1Icon, Avatar2Icon, Avatar3Icon, Avatar4Icon } from './Icons';
+import { SendIcon, Avatar1Icon, Avatar2Icon, Avatar3Icon, Avatar4Icon } from './Icons';
 import { BadgeNotification } from './BadgeNotification';
 import { CelebrationModal } from './CelebrationModal';
 import { DragDropQuiz } from './DragDropQuiz';
@@ -35,8 +35,8 @@ const QUIZ_POINTS: Record<string, number> = {
 const TypingIndicator = () => (
     <div className="flex justify-start animate-slide-in-up">
         <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-[var(--surface-b)] flex items-center justify-center flex-shrink-0 shadow-md border border-[var(--border-color)]">
-                <BotIcon className="w-6 h-6 text-[var(--text-dim)]" />
+            <div className="w-16 h-16 rounded-full bg-[var(--surface-b)] flex items-center justify-center flex-shrink-0 shadow-md border border-[var(--border-color)] overflow-hidden">
+                <img src="https://i.imgur.com/YAKWkLu.png" alt="Chatbot Avatar" className="w-full h-full object-cover" />
             </div>
             <div className="bot-bubble chat-bubble">
                 <div className="flex gap-2 items-center h-6">
@@ -68,7 +68,7 @@ const ChatMessage: React.FC<{
         return (
             <div className="flex justify-end animate-slide-in-up">
                 <div className="flex items-start gap-3 flex-row-reverse">
-                    <div className="w-10 h-10 rounded-full bg-[var(--surface-b)] flex items-center justify-center flex-shrink-0 shadow-md border border-[var(--border-color)] p-1 overflow-hidden">
+                    <div className="w-16 h-16 rounded-full bg-[var(--surface-b)] flex items-center justify-center flex-shrink-0 shadow-md border border-[var(--border-color)] p-1 overflow-hidden">
                         {UserAvatarComponent && <UserAvatarComponent className="w-full h-full" />}
                     </div>
                     <div className="user-bubble chat-bubble">
@@ -82,8 +82,8 @@ const ChatMessage: React.FC<{
     return (
         <div className="flex justify-start animate-slide-in-up">
             <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-[var(--surface-b)] flex items-center justify-center flex-shrink-0 shadow-md border border-[var(--border-color)]">
-                     <BotIcon className="w-6 h-6 text-[var(--text-dim)]" />
+                <div className="w-16 h-16 rounded-full bg-[var(--surface-b)] flex items-center justify-center flex-shrink-0 shadow-md border border-[var(--border-color)] overflow-hidden">
+                     <img src="https://i.imgur.com/YAKWkLu.png" alt="Chatbot Avatar" className="w-full h-full object-cover" />
                 </div>
                 <div className="bot-bubble chat-bubble">
                     <div dangerouslySetInnerHTML={{ __html: formatMessageContent(message.text) }} />
