@@ -8,7 +8,6 @@ export type Translations = {
 export const translations: Translations = {
   en: {
     // Header
-    header_title: "Your Friendly ESG Guide",
     learning_progress: "Learning Progress",
     points: "points",
     
@@ -250,7 +249,6 @@ export const translations: Translations = {
   },
   ms: {
     // Header
-    header_title: "Panduan ESG Mesra Anda",
     learning_progress: "Proses Pembelajaran",
     points: "mata",
 
