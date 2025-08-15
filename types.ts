@@ -127,8 +127,10 @@ export interface GameState {
     major: string;
     lastQuestionId: string;
     visitedProgressNodes: Set<string>;
+    visitedSecondaryBranches: Record<string, Set<string>>;
     quizCompleted: boolean;
     q6Attempts: number;
     q7Attempts: number;
     q8Skipped: boolean;
+    esgBreakdownCompleted: boolean;
 }
