@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Header } from './Header';
 import { BackgroundEffects } from './BackgroundEffects';
@@ -132,10 +130,12 @@ const App: React.FC = () => {
         major: '',
         lastQuestionId: '',
         visitedProgressNodes: new Set(),
+        visitedSecondaryBranches: {},
         quizCompleted: false,
         q6Attempts: 0,
         q7Attempts: 0,
         q8Skipped: false,
+        esgBreakdownCompleted: false,
     };
 
     const [gameState, setGameState] = useState<GameState>(initialGameState);
@@ -145,7 +145,6 @@ const App: React.FC = () => {
     const [inputVisible, setInputVisible] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [visitedLoopBranches, setVisitedLoopBranches] = useState(new Set<string>());
-    const [visitedSecondaryBranches, setVisitedSecondaryBranches] = useState<Record<string, Set<string>>>({});
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
     const [language, setLanguage] = useState<Language>('en');
     const [activeBadge, setActiveBadge] = useState<Badge | null>(null);
@@ -237,7 +236,6 @@ const App: React.FC = () => {
         setGameState(initialGameState);
         setMessages([]);
         setVisitedLoopBranches(new Set());
-        setVisitedSecondaryBranches({});
         setCurrentNodeId('start');
         setAppPhase('avatar_selection');
         setShowCelebration(false);
@@ -251,8 +249,14 @@ const App: React.FC = () => {
             const isNewNode = !gameState.visitedProgressNodes.has(currentNodeId);
             if (isNewNode) {
                 setGameState(prev => {
-                    const oldProgressScore = Math.floor((prev.visitedProgressNodes.size / totalProgressSteps) * 200);
                     const newVisited = new Set(prev.visitedProgressNodes).add(currentNodeId);
+                    
+                    // Do not award points for the initial 'start' node
+                    if (currentNodeId === 'start') {
+                        return { ...prev, visitedProgressNodes: newVisited };
+                    }
+                    
+                    const oldProgressScore = Math.floor((prev.visitedProgressNodes.size / totalProgressSteps) * 200);
                     const newProgressScore = Math.floor((newVisited.size / totalProgressSteps) * 200);
                     const pointsFromLearning = newProgressScore - oldProgressScore;
                     const newTotalScore = Math.min(1000, prev.score + pointsFromLearning);
@@ -346,7 +350,7 @@ const App: React.FC = () => {
 
             if (node.type === 'ANSWER' && personalEsgPillarNodes.includes(currentNodeId)) {
                 const hubNode = decisionTree['personal_esg_pillars_hub'] as LoopQuestionNode;
-                const visitedPillars = visitedSecondaryBranches['personal_esg_pillars_hub'] || new Set();
+                const visitedPillars = gameState.visitedSecondaryBranches['personal_esg_pillars_hub'] || new Set();
 
                 const hubBranches = hubNode.branches;
                 const currentPillarKey = Object.keys(hubBranches).find(key => hubBranches[key].nextNode === currentNodeId);
@@ -356,7 +360,7 @@ const App: React.FC = () => {
                 }
                
                 if (tempVisitedPillars.size === Object.keys(hubNode.branches).length) {
-                    const moreImportanceVisitedSet = visitedSecondaryBranches['more_importance_esg'] || new Set();
+                    const moreImportanceVisitedSet = gameState.visitedSecondaryBranches['more_importance_esg'] || new Set();
                     
                     if (!moreImportanceVisitedSet.has('matter_as_student')) {
                         messageButtons = [{
@@ -374,7 +378,7 @@ const App: React.FC = () => {
                 }
             } else if (node.type === 'ANSWER' && relevanceHubAnswerNodes.includes(currentNodeId)) {
                 const hubNode = decisionTree['relevance_hub'] as LoopQuestionNode;
-                const visitedBranches = visitedSecondaryBranches['relevance_hub'] || new Set();
+                const visitedBranches = gameState.visitedSecondaryBranches['relevance_hub'] || new Set();
                 
                 const hubBranches = hubNode.branches;
                 const currentBranchKey = Object.keys(hubBranches).find(key => hubBranches[key].nextNode === currentNodeId);
@@ -397,10 +401,17 @@ const App: React.FC = () => {
             } else if (node.type === 'LOOP_QUESTION') {
                 const isSecondary = !!node.parentLoop;
                 const loopKey = isSecondary ? currentNodeId : 'main_loop';
-                const visitedSet = isSecondary ? (visitedSecondaryBranches[loopKey] || new Set()) : visitedLoopBranches;
+                const visitedSet = isSecondary ? (gameState.visitedSecondaryBranches[loopKey] || new Set()) : visitedLoopBranches;
                 const remainingBranches = Object.keys(node.branches).filter(key => !visitedSet.has(key));
 
                 if (remainingBranches.length === 0) {
+                    if (currentNodeId === 'main_loop') {
+                        setGameState(prev => ({ 
+                            ...prev, 
+                            score: 200,
+                            visitedProgressNodes: new Set(progressNodes) 
+                        }));
+                    }
                     setCurrentNodeId(node.nextNode);
                     return;
                 }
@@ -528,10 +539,12 @@ const App: React.FC = () => {
         if (nextNodeId === 'matter_as_student_answer' && personalEsgPillarNodes.includes(currentNodeId)) {
             // This is the special transition from the personal ESG pillars to the "matter as student" topic.
             // We need to manually mark 'matter_as_student' as visited for its parent loop ('more_importance_esg').
-            setVisitedSecondaryBranches(prev => {
-                const newSet = new Set(prev['more_importance_esg'] || []);
+            setGameState(prev => {
+                const newVisitedSecondary = { ...prev.visitedSecondaryBranches };
+                const newSet = new Set(newVisitedSecondary['more_importance_esg'] || []);
                 newSet.add('matter_as_student');
-                return { ...prev, 'more_importance_esg': newSet };
+                newVisitedSecondary['more_importance_esg'] = newSet;
+                return { ...prev, visitedSecondaryBranches: newVisitedSecondary };
             });
         }
         
@@ -576,10 +589,24 @@ const App: React.FC = () => {
                     setVisitedLoopBranches(newVisited);
                 }
             } else {
-                 setVisitedSecondaryBranches(prev => {
-                    const newSet = new Set(prev[currentNodeId] || []);
+                 setGameState(prev => {
+                    const newVisitedSecondary = { ...prev.visitedSecondaryBranches };
+                    const newSet = new Set(newVisitedSecondary[currentNodeId] || []);
                     newSet.add(branchKey);
-                    return {...prev, [currentNodeId]: newSet };
+                    newVisitedSecondary[currentNodeId] = newSet;
+
+                    if (currentNodeId === 'esg_breakdown_hub' && newSet.size === 3 && !prev.esgBreakdownCompleted) {
+                        const scoreCap = prev.q8Skipped ? 999 : 1000;
+                        const newScore = Math.min(scoreCap, prev.score + 23);
+                        return {
+                            ...prev,
+                            score: newScore,
+                            esgBreakdownCompleted: true,
+                            visitedSecondaryBranches: newVisitedSecondary
+                        };
+                    }
+
+                    return { ...prev, visitedSecondaryBranches: newVisitedSecondary };
                 });
             }
         }
