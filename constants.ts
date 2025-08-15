@@ -1,5 +1,6 @@
 
 
+
 import type { DecisionTree, Badge, WordSearchPoolItem, DragDropQuizNode, WordSearchQuizNode } from './types';
 
 export const BADGES: Badge[] = [
@@ -32,15 +33,22 @@ export const progressNodes = new Set([
   'collect_university',
   'greeting',
   'what_is_esg_answer',
+  'esg_breakdown_hub',
+  'esg_breakdown_e',
+  'esg_breakdown_s',
+  'esg_breakdown_g',
   'main_loop',
   'why_important_answer',
   'more_importance_esg',
   'matter_as_student_answer',
-  'insurance_link_answer',
   'what_can_i_do_answer',
   'what_else_student_prompt',
   'what_else_response',
   'how_relevant_answer',
+  'relevance_hub',
+  'relevance_career_answer',
+  'relevance_consumer_answer',
+  'relevance_community_answer',
   'career_opportunities_answer',
   'career_next_steps',
   'how_to_learn_answer',
@@ -48,7 +56,13 @@ export const progressNodes = new Set([
   'degree_major_response',
   'do_i_matter_answer',
   'digital_habits_answer',
-  'learning_complete_prompt_quiz'
+  'learning_complete_prompt_quiz',
+  'personal_esg_intro',
+  'personal_esg_tool_explanation',
+  'personal_esg_pillars_hub',
+  'personal_esg_pillar_e_answer',
+  'personal_esg_pillar_s_answer',
+  'personal_esg_pillar_g_answer',
 ]);
 
 export const totalProgressSteps = progressNodes.size;
@@ -82,7 +96,49 @@ export const decisionTree: DecisionTree = {
     'what_is_esg_answer': {
         text: "what_is_esg_answer_text",
         type: 'ANSWER',
-        buttons: [ { text: "btn_what_else_esg", nextNode: 'main_loop' } ]
+        buttons: [ 
+            { text: "btn_esg_breakdown", nextNode: 'esg_breakdown_hub' },
+            { text: "btn_what_else_esg", nextNode: 'main_loop' } 
+        ]
+    },
+    'esg_breakdown_hub': {
+        text: 'esg_breakdown_hub_text',
+        type: 'LOOP_QUESTION',
+        parentLoop: 'main_loop', // Technically it's a sub-loop, but this works
+        nextNode: 'main_loop',
+        branches: {
+            'explore_e': { text: 'btn_explore_e', nextNode: 'esg_breakdown_e' },
+            'explore_s': { text: 'btn_explore_s', nextNode: 'esg_breakdown_s' },
+            'explore_g': { text: 'btn_explore_g', nextNode: 'esg_breakdown_g' },
+        },
+    },
+    'esg_breakdown_e': {
+        text: 'esg_breakdown_e_text',
+        type: 'ANSWER',
+        buttons: [ 
+            { text: 'btn_back_to_breakdown', nextNode: 'esg_breakdown_hub_revisit' },
+            { text: 'btn_continue_to_main_topics', nextNode: 'main_loop' }
+        ]
+    },
+    'esg_breakdown_s': {
+        text: 'esg_breakdown_s_text',
+        type: 'ANSWER',
+        buttons: [ 
+            { text: 'btn_back_to_breakdown', nextNode: 'esg_breakdown_hub_revisit' },
+            { text: 'btn_continue_to_main_topics', nextNode: 'main_loop' }
+        ]
+    },
+    'esg_breakdown_g': {
+        text: 'esg_breakdown_g_text',
+        type: 'ANSWER',
+        buttons: [ 
+            { text: 'btn_back_to_breakdown', nextNode: 'esg_breakdown_hub_revisit' },
+            { text: 'btn_continue_to_main_topics', nextNode: 'main_loop' }
+        ]
+    },
+    'esg_breakdown_hub_revisit': {
+        type: 'REDIRECT',
+        nextNode: 'esg_breakdown_hub'
     },
     'main_loop': {
         text: "main_loop_text",
@@ -108,7 +164,7 @@ export const decisionTree: DecisionTree = {
         nextNode: 'more_importance_esg_end',
         branches: {
             'matter_as_student': { text: "btn_matter_as_student", nextNode: 'matter_as_student_answer' },
-            'insurance_link': { text: "btn_insurance_link", nextNode: 'insurance_link_answer' }
+            'personal_esg': { text: "btn_personal_esg", nextNode: 'personal_esg_intro' }
         }
     },
     'matter_as_student_answer': {
@@ -116,45 +172,41 @@ export const decisionTree: DecisionTree = {
         type: 'ANSWER',
         buttons: [ { text: "btn_makes_sense", nextNode: 'end_secondary_branch' } ]
     },
-    'insurance_link_answer': {
-        text: "insurance_link_answer_text",
+    'personal_esg_intro': {
+        text: "personal_esg_intro_text",
         type: 'ANSWER',
-        buttons: [
-            { text: "btn_yes_show_demo", nextNode: 'insurance_demo_prompt' },
-            { text: "btn_i_get_it_continue", nextNode: 'insurance_summary' }
-        ]
+        buttons: [ { text: 'btn_how_insurance_is_tool', nextNode: 'personal_esg_tool_explanation' } ]
     },
-    'insurance_demo_prompt': {
-        text: "insurance_demo_prompt_text",
+    'personal_esg_tool_explanation': {
+        text: 'personal_esg_tool_explanation_text',
+        type: 'ANSWER',
+        buttons: [ { text: "btn_how_fits_long_game", nextNode: 'personal_esg_pillars_hub' } ]
+    },
+    'personal_esg_pillars_hub': {
+        text: "personal_esg_pillars_hub_text",
         type: 'LOOP_QUESTION',
         parentLoop: 'more_importance_esg',
-        nextNode: 'insurance_summary',
+        nextNode: 'end_secondary_branch',
         branches: {
-            'transport': { text: "btn_transport_scenario", nextNode: 'insurance_transport_answer' },
-            'sickness': { text: "btn_sickness_scenario", nextNode: 'insurance_sickness_answer' }
+            'pillar_e': { text: "btn_personal_pillar_e", nextNode: 'personal_esg_pillar_e_answer' },
+            'pillar_s': { text: "btn_personal_pillar_s", nextNode: 'personal_esg_pillar_s_answer' },
+            'pillar_g': { text: "btn_personal_pillar_g", nextNode: 'personal_esg_pillar_g_answer' }
         }
     },
-    'insurance_transport_answer': {
-        text: "insurance_transport_answer_text",
+    'personal_esg_pillar_e_answer': {
+        text: "personal_esg_pillar_e_answer_text",
         type: 'ANSWER',
-        buttons: [
-             { text: "btn_explore_more", nextNode: 'https://www.rhbinsurance.com.my/', type: 'external_link' },
-             { text: "btn_continue_to_summary", nextNode: 'insurance_summary' }
-        ]
+        buttons: [ { text: "btn_explore_other_pillars", nextNode: 'personal_esg_pillars_hub' }]
     },
-    'insurance_sickness_answer': {
-        text: "insurance_sickness_answer_text",
+    'personal_esg_pillar_s_answer': {
+        text: "personal_esg_pillar_s_answer_text",
         type: 'ANSWER',
-        buttons: [
-            { text: "btn_explore_more", nextNode: 'https://www.rhbinsurance.com.my/', type: 'external_link' },
-            { text: "btn_continue_to_summary", nextNode: 'insurance_summary' }
-        ]
+        buttons: [ { text: "btn_explore_other_pillars", nextNode: 'personal_esg_pillars_hub' }]
     },
-    'insurance_demo_redirect': { type: 'REDIRECT', nextNode: 'insurance_demo_prompt' },
-    'insurance_summary': {
-        text: "insurance_summary_text",
+    'personal_esg_pillar_g_answer': {
+        text: "personal_esg_pillar_g_answer_text",
         type: 'ANSWER',
-        buttons: [ { text: "btn_yes_go_back", nextNode: 'end_secondary_branch' }]
+        buttons: [ { text: "btn_explore_other_pillars", nextNode: 'personal_esg_pillars_hub' }]
     },
     'more_importance_esg_end': {
         text: "all_subtopics_done_prompt",
@@ -183,9 +235,35 @@ export const decisionTree: DecisionTree = {
 
     // Branch 3: How Relevant
     'how_relevant_answer': {
-        text: "how_relevant_answer_text",
+        text: "relevance_intro_text",
         type: 'ANSWER',
-        buttons: [ { text: "btn_career_opportunities", nextNode: 'career_opportunities_answer' } ]
+        buttons: [ { text: "btn_show_me_areas", nextNode: 'relevance_hub' } ]
+    },
+    'relevance_hub': {
+        text: 'relevance_hub_text',
+        type: 'LOOP_QUESTION',
+        parentLoop: 'main_loop',
+        nextNode: 'career_opportunities_answer', // After loop completion
+        branches: {
+            'career': { text: 'btn_relevance_career', nextNode: 'relevance_career_answer' },
+            'consumer': { text: 'btn_relevance_consumer', nextNode: 'relevance_consumer_answer' },
+            'community': { text: 'btn_relevance_community', nextNode: 'relevance_community_answer' },
+        }
+    },
+    'relevance_career_answer': {
+        text: 'relevance_career_answer_text',
+        type: 'ANSWER',
+        buttons: [{ text: "btn_explore_other_relevance", nextNode: 'relevance_hub' }]
+    },
+    'relevance_consumer_answer': {
+        text: 'relevance_consumer_answer_text',
+        type: 'ANSWER',
+        buttons: [{ text: "btn_explore_other_relevance", nextNode: 'relevance_hub' }]
+    },
+    'relevance_community_answer': {
+        text: 'relevance_community_answer_text',
+        type: 'ANSWER',
+        buttons: [{ text: "btn_explore_other_relevance", nextNode: 'relevance_hub' }]
     },
     'career_opportunities_answer': {
         text: "career_opportunities_answer_text",
