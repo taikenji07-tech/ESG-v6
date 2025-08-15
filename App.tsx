@@ -1,5 +1,6 @@
 
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Header } from './Header';
 import { BackgroundEffects } from './BackgroundEffects';
@@ -12,7 +13,7 @@ import { ToastNotification } from './ToastNotification';
 import { ProgressMilestonePopup } from './ProgressMilestonePopup';
 import { decisionTree, quizOrder, progressNodes, totalProgressSteps, BADGES, WORD_SEARCH_POOL } from './constants';
 import { translations } from './translations';
-import type { Message, NodeId, DecisionTree, Node, Button, GameState, Badge, LoopQuestionNode, Language, DragDropQuizNode, WordSearchQuizNode } from './types';
+import type { Message, NodeId, DecisionTree, Node, Button, GameState, Badge, LoopQuestionNode, Language, DragDropQuizNode, WordSearchQuizNode, AnswerNode } from './types';
 import { getDynamicResponse, translateToMalay, submitToGoogleForm, validateEmailWithAI, getAIImpactReminder } from './geminiService';
 
 const avatarIconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
@@ -340,7 +341,58 @@ const App: React.FC = () => {
             let messageButtons: Button[] | undefined = undefined;
             let quizData: DragDropQuizNode | WordSearchQuizNode | undefined = undefined;
 
-            if (node.type === 'QUIZ_DRAG_DROP' || node.type === 'QUIZ_WORD_SEARCH') {
+            const personalEsgPillarNodes = ['personal_esg_pillar_e_answer', 'personal_esg_pillar_s_answer', 'personal_esg_pillar_g_answer'];
+            const relevanceHubAnswerNodes = ['relevance_career_answer', 'relevance_consumer_answer', 'relevance_community_answer'];
+
+            if (node.type === 'ANSWER' && personalEsgPillarNodes.includes(currentNodeId)) {
+                const hubNode = decisionTree['personal_esg_pillars_hub'] as LoopQuestionNode;
+                const visitedPillars = visitedSecondaryBranches['personal_esg_pillars_hub'] || new Set();
+
+                const hubBranches = hubNode.branches;
+                const currentPillarKey = Object.keys(hubBranches).find(key => hubBranches[key].nextNode === currentNodeId);
+                const tempVisitedPillars = new Set(visitedPillars);
+                if (currentPillarKey) {
+                   tempVisitedPillars.add(currentPillarKey);
+                }
+               
+                if (tempVisitedPillars.size === Object.keys(hubNode.branches).length) {
+                    const moreImportanceVisitedSet = visitedSecondaryBranches['more_importance_esg'] || new Set();
+                    
+                    if (!moreImportanceVisitedSet.has('matter_as_student')) {
+                        messageButtons = [{
+                            text: t('btn_matter_as_student'),
+                            nextNode: 'matter_as_student_answer'
+                        }];
+                    } else {
+                        messageButtons = [{
+                           text: t('btn_back_to_main_topics'),
+                           nextNode: 'end_branch'
+                        }];
+                    }
+                } else {
+                   messageButtons = node.buttons?.map(btn => ({ ...btn, text: t(btn.text) })) || [];
+                }
+            } else if (node.type === 'ANSWER' && relevanceHubAnswerNodes.includes(currentNodeId)) {
+                const hubNode = decisionTree['relevance_hub'] as LoopQuestionNode;
+                const visitedBranches = visitedSecondaryBranches['relevance_hub'] || new Set();
+                
+                const hubBranches = hubNode.branches;
+                const currentBranchKey = Object.keys(hubBranches).find(key => hubBranches[key].nextNode === currentNodeId);
+                const tempVisitedBranches = new Set(visitedBranches);
+                if (currentBranchKey) {
+                    tempVisitedBranches.add(currentBranchKey);
+                }
+
+                if (tempVisitedBranches.size === Object.keys(hubBranches).length) {
+                     messageButtons = [{
+                        text: t('btn_continue_to_career_opps'),
+                        nextNode: hubNode.nextNode
+                    }];
+                } else {
+                    messageButtons = node.buttons?.map(btn => ({ ...btn, text: t(btn.text) })) || [];
+                }
+
+            } else if (node.type === 'QUIZ_DRAG_DROP' || node.type === 'QUIZ_WORD_SEARCH') {
                 quizData = node;
             } else if (node.type === 'LOOP_QUESTION') {
                 const isSecondary = !!node.parentLoop;
@@ -356,14 +408,26 @@ const App: React.FC = () => {
                 if (visitedSet.size > 0) {
                     if (currentNodeId === 'more_importance_esg') {
                         const remainingBranchKey = remainingBranches[0];
-                        const key = remainingBranchKey === 'matter_as_student' 
-                            ? 'more_importance_esg_revisit_text_matter_as_student' 
-                            : 'more_importance_esg_revisit_text_insurance_link';
+                        let key: string;
+                        if (remainingBranchKey === 'matter_as_student') {
+                            key = 'more_importance_esg_revisit_text_matter_as_student';
+                        } else if (remainingBranchKey === 'personal_esg') {
+                            key = 'more_importance_esg_revisit_text_personal_esg';
+                        } else {
+                            key = 'more_importance_esg_revisit_text';
+                        }
                         messageText = t(key);
-                    } else if (currentNodeId === 'insurance_demo_prompt') {
-                        // Special handling for the insurance demo loop if needed
                     } else { 
-                        const revisitTextKey = isSecondary ? 'more_importance_esg_revisit_text' : 'main_loop_revisit_text';
+                        let revisitTextKey = 'main_loop_revisit_text';
+                        if (isSecondary) {
+                           if (currentNodeId === 'personal_esg_pillars_hub') {
+                               revisitTextKey = 'personal_esg_pillars_hub_revisit_text';
+                           } else if (currentNodeId === 'relevance_hub') {
+                               revisitTextKey = 'relevance_hub_revisit_text';
+                           } else {
+                               revisitTextKey = 'more_importance_esg_revisit_text';
+                           }
+                        }
                         messageText = t(revisitTextKey, { userName: gameState.userName });
                     }
                 }
@@ -458,8 +522,18 @@ const App: React.FC = () => {
             return;
         }
 
-
         addMessage({ sender: 'user', text: buttonText }, lastMessage.id);
+        
+        const personalEsgPillarNodes = ['personal_esg_pillar_e_answer', 'personal_esg_pillar_s_answer', 'personal_esg_pillar_g_answer'];
+        if (nextNodeId === 'matter_as_student_answer' && personalEsgPillarNodes.includes(currentNodeId)) {
+            // This is the special transition from the personal ESG pillars to the "matter as student" topic.
+            // We need to manually mark 'matter_as_student' as visited for its parent loop ('more_importance_esg').
+            setVisitedSecondaryBranches(prev => {
+                const newSet = new Set(prev['more_importance_esg'] || []);
+                newSet.add('matter_as_student');
+                return { ...prev, 'more_importance_esg': newSet };
+            });
+        }
         
         if (nextNodeId === 'start') {
             resetGame();
