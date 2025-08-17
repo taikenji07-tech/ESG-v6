@@ -494,10 +494,11 @@ const App: React.FC = () => {
         if (type === 'share_linkedin') {
             const shareText = `I just completed the ESG Student Guide by RHB, scoring ${Math.round(gameState.score)} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance`;
             
-            // The '/wvm/share' endpoint is used here to encourage opening in a mobile browser/webview 
-            // instead of the native app. This helps ensure the pre-filled text parameter is correctly handled,
-            // as the native app sometimes ignores it with other endpoints.
-            const url = `https://www.linkedin.com/wvm/share?text=${encodeURIComponent(shareText)}`;
+            // Using the standard 'shareArticle' endpoint, which is more reliable across devices.
+            // This method shares a link (to the RHB homepage) with the pre-filled text as commentary.
+            // This is the most robust way to ensure the text appears in the share dialog on both desktop and mobile.
+            const rhbUrl = 'https://www.rhbinsurance.com.my/';
+            const url = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(rhbUrl)}&summary=${encodeURIComponent(shareText)}`;
 
             window.open(url, '_blank', 'noopener,noreferrer');
             return;
