@@ -494,11 +494,10 @@ const App: React.FC = () => {
         if (type === 'share_linkedin') {
             const shareText = `I just completed the ESG Student Guide by RHB, scoring ${Math.round(gameState.score)} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance`;
             
-            // Using the standard 'shareArticle' endpoint, which is more reliable across devices.
-            // This method shares a link (to the RHB homepage) with the pre-filled text as commentary.
-            // This is the most robust way to ensure the text appears in the share dialog on both desktop and mobile.
-            const rhbUrl = 'https://www.rhbinsurance.com.my/';
-            const url = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(rhbUrl)}&summary=${encodeURIComponent(shareText)}`;
+            // This URL is designed to open the post composer directly on the user's feed,
+            // pre-filled with the specified text. This method is reliable across desktop and mobile browsers
+            // for creating text-only posts.
+            const url = `https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(shareText)}`;
 
             window.open(url, '_blank', 'noopener,noreferrer');
             return;
