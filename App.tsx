@@ -494,12 +494,11 @@ const App: React.FC = () => {
         if (type === 'share_linkedin') {
             const shareText = `I just completed the ESG Student Guide by RHB, scoring ${Math.round(gameState.score)} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance`;
             
-            // Using the standard 'shareArticle' endpoint with an empty URL.
-            // This is a robust method for creating a text-focused post. It is intended to work more
-            // consistently across desktop and mobile browsers, addressing issues where the native mobile
-            // app might not handle other sharing URLs correctly.
+            // Using the /feed/ endpoint for a text-only post. Adding a 'trk' query parameter
+            // is a strategy to prevent mobile devices from automatically opening the native app,
+            // aiming to force the link to open in the browser for more reliable text pre-filling.
             const encodedText = encodeURIComponent(shareText);
-            const url = `https://www.linkedin.com/shareArticle?mini=true&url=&summary=${encodedText}`;
+            const url = `https://www.linkedin.com/feed/?shareActive=true&text=${encodedText}&trk=public_profile`;
 
             window.open(url, '_blank', 'noopener,noreferrer');
             return;
