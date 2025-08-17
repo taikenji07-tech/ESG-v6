@@ -494,11 +494,10 @@ const App: React.FC = () => {
         if (type === 'share_linkedin') {
             const shareText = `I just completed the ESG Student Guide by RHB, scoring ${Math.round(gameState.score)} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance`;
             
-            // The /feed/ endpoint with the 'text' parameter is more reliable for pre-filling post content
-            // across both desktop and mobile, even if mobile deep-links into the app.
-            // The 'shareArticle' endpoint is intended for sharing URLs, and its 'summary' parameter is often ignored
-            // by the mobile app when no URL is provided.
-            const url = `https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(shareText)}`;
+            // The '/wvm/share' endpoint is used here to encourage opening in a mobile browser/webview 
+            // instead of the native app. This helps ensure the pre-filled text parameter is correctly handled,
+            // as the native app sometimes ignores it with other endpoints.
+            const url = `https://www.linkedin.com/wvm/share?text=${encodeURIComponent(shareText)}`;
 
             window.open(url, '_blank', 'noopener,noreferrer');
             return;
