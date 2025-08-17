@@ -493,13 +493,15 @@ const App: React.FC = () => {
         if (type === 'share_linkedin') {
             const shareText = `I just completed the ESG Student Guide by RHB, scoring ${Math.round(gameState.score)} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance`;
             
-            // The URL to be shared. A generic link to the company is appropriate here.
-            const sharedUrl = 'https://www.rhbinsurance.com.my/';
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
-            // Using the official 'shareArticle' endpoint which is more reliable across devices for pre-filling text.
-            const linkedInUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(sharedUrl)}&summary=${encodeURIComponent(shareText)}`;
+            // For mobile, we use the shareArticle endpoint which is less likely to be deep-linked,
+            // encouraging it to open in the browser. For desktop, we use the feed endpoint.
+            const url = isMobile
+                ? `https://www.linkedin.com/shareArticle?mini=true&summary=${encodeURIComponent(shareText)}`
+                : `https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent(shareText)}`;
 
-            window.open(linkedInUrl, '_blank', 'noopener,noreferrer');
+            window.open(url, '_blank', 'noopener,noreferrer');
             return;
         }
         
