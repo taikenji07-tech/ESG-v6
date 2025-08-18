@@ -494,11 +494,10 @@ const App: React.FC = () => {
         if (type === 'share_linkedin') {
             const shareText = `I just completed the ESG Student Guide by RHB, scoring ${Math.round(gameState.score)} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance`;
             
-            // Using the /feed/ endpoint for a text-only post. Adding a 'trk' query parameter
-            // is a strategy to prevent mobile devices from automatically opening the native app,
-            // aiming to force the link to open in the browser for more reliable text pre-filling.
+            // This URL pre-fills a text post on LinkedIn. On mobile devices, this should
+            // open the LinkedIn app if it's installed, thanks to universal linking.
             const encodedText = encodeURIComponent(shareText);
-            const url = `https://www.linkedin.com/feed/?shareActive=true&text=${encodedText}&trk=public_profile`;
+            const url = `https://www.linkedin.com/feed/?shareActive=true&text=${encodedText}`;
 
             window.open(url, '_blank', 'noopener,noreferrer');
             return;
