@@ -492,13 +492,19 @@ const App: React.FC = () => {
         }
 
         if (type === 'share_linkedin') {
-            const shareText = `I just completed the ESG Student Guide by RHB, scoring ${Math.round(gameState.score)} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance`;
+            const postText = `I just completed the ESG Student Guide by RHB, scoring ${Math.round(gameState.score)} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance`;
             
-            // This URL pre-fills a text post on LinkedIn. The link is structured to use
-            // universal linking, which means it will open the native LinkedIn app on
-            // mobile devices if installed (for a better UX) or a browser tab on desktop.
-            const encodedText = encodeURIComponent(shareText);
-            const url = `https://www.linkedin.com/feed/?shareActive=true&text=${encodedText}`;
+            // The previous text-only share link (`/feed?shareActive=true...`) is unreliable on mobile apps.
+            // This switches to the more robust `shareArticle` endpoint.
+            // It requires a URL, creating a link preview, but correctly pre-fills the post text (`summary`) on both desktop and mobile.
+            const shareUrl = 'https://www.rhbinsurance.com.my/';
+            const title = 'RHB ESG Student Guide';
+
+            const encodedUrl = encodeURIComponent(shareUrl);
+            const encodedTitle = encodeURIComponent(title);
+            const encodedSummary = encodeURIComponent(postText);
+            
+            const url = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedTitle}&summary=${encodedSummary}`;
 
             window.open(url, '_blank', 'noopener,noreferrer');
             return;
