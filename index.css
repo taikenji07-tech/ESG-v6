@@ -715,7 +715,7 @@ body {
 }
 .learning-progress-bar-text {
     position: absolute;
-    top: 16px; /* Positioned below the 12px bar */
+    bottom: 16px; /* Positioned above the 12px bar */
     left: 50%;
     transform: translateX(-50%);
     background-color: var(--surface-b);
