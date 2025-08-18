@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Header } from './Header';
 import { BackgroundEffects } from './BackgroundEffects';
@@ -32,66 +33,13 @@ const QUIZ_POINTS: Record<string, number> = {
 
 const ChatMessage: React.FC<{
     message: Message;
-    isLastMessage: boolean;
     onOptionClick: (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: 'show_certificate' | 'copy_text' | 'external_link') => void;
     onDragDropQuizComplete: (isCorrect: boolean) => void;
     onWordSearchQuizComplete: (foundWords: string[]) => void;
     onWordSearchQuizSkip: () => void;
     userAvatar: string;
-    scrollToBottom: (behavior?: 'smooth' | 'auto') => void;
-}> = ({ message, isLastMessage, onOptionClick, onDragDropQuizComplete, onWordSearchQuizComplete, onWordSearchQuizSkip, userAvatar, scrollToBottom }) => {
+}> = ({ message, onOptionClick, onDragDropQuizComplete, onWordSearchQuizComplete, onWordSearchQuizSkip, userAvatar }) => {
     
-    const [typedText, setTypedText] = useState(isLastMessage && message.sender === 'bot' ? '' : message.text);
-    const isTypingComplete = typedText.length === message.text.length;
-
-    useEffect(() => {
-        if (isLastMessage && message.sender === 'bot') {
-            setTypedText('');
-            let i = 0;
-            const text = message.text;
-            const speed = 10;
-
-            const typingInterval = setInterval(() => {
-                if (i < text.length) {
-                    const nextChar = text[i];
-                    if (nextChar === '<') {
-                        const tagEnd = text.indexOf('>', i);
-                        if (tagEnd !== -1) {
-                            const tag = text.substring(i, tagEnd + 1);
-                            setTypedText(prev => prev + tag);
-                            i += tag.length;
-                        } else {
-                           setTypedText(prev => prev + nextChar);
-                           i++;
-                        }
-                    } else {
-                        setTypedText(prev => prev + nextChar);
-                        i++;
-                    }
-                    scrollToBottom('auto');
-                } else {
-                    clearInterval(typingInterval);
-                }
-            }, speed);
-
-            return () => clearInterval(typingInterval);
-        } else {
-            setTypedText(message.text);
-        }
-    }, [message.text, isLastMessage, message.sender, scrollToBottom]);
-
-    // This effect ensures that after the typing animation is complete,
-    // we perform one final scroll to make sure any newly rendered buttons or quizzes are in view.
-    useEffect(() => {
-        if (isTypingComplete && isLastMessage) {
-            const timer = setTimeout(() => {
-                scrollToBottom();
-            }, 100); // A small delay allows for button animations to start.
-            return () => clearTimeout(timer);
-        }
-    }, [isTypingComplete, isLastMessage, scrollToBottom]);
-
-
     const formatMessageContent = (text: string) => {
         return text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -121,8 +69,8 @@ const ChatMessage: React.FC<{
                      <img src="https://i.imgur.com/YAKWkLu.png" alt="Chatbot Avatar" className="w-full h-full object-cover transform -scale-x-100" />
                 </div>
                 <div className="bot-bubble chat-bubble">
-                    <div dangerouslySetInnerHTML={{ __html: formatMessageContent(typedText) }} />
-                    {isTypingComplete && message.buttons && (
+                    <div dangerouslySetInnerHTML={{ __html: formatMessageContent(message.text) }} />
+                    {message.buttons && (
                         <div className="mt-4 space-y-2 animate-fade-in-up">
                             {message.buttons.map((button, index) => (
                                 <button
@@ -135,10 +83,10 @@ const ChatMessage: React.FC<{
                             ))}
                         </div>
                     )}
-                    {isTypingComplete && message.quizData && message.quizData.type === 'QUIZ_DRAG_DROP' && (
+                    {message.quizData && message.quizData.type === 'QUIZ_DRAG_DROP' && (
                         <DragDropQuiz node={message.quizData} onComplete={onDragDropQuizComplete} language={message.language!} />
                     )}
-                    {isTypingComplete && message.quizData && message.quizData.type === 'QUIZ_WORD_SEARCH' && (
+                    {message.quizData && message.quizData.type === 'QUIZ_WORD_SEARCH' && (
                         <WordSearchQuiz 
                             node={message.quizData} 
                             wordPool={WORD_SEARCH_POOL}
@@ -214,7 +162,11 @@ const App: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        scrollToBottom();
+        // Add a small delay to make the scroll feel more natural and less jarring.
+        const timer = setTimeout(() => {
+            scrollToBottom();
+        }, 100);
+        return () => clearTimeout(timer);
     }, [messages.length, scrollToBottom]);
     
     // Handles layout shifts when the virtual keyboard appears on mobile
@@ -937,17 +889,15 @@ const App: React.FC = () => {
                     ) : (
                         <>
                             <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 custom-scrollbar">
-                                {messages.map((msg, index) => (
+                                {messages.map((msg) => (
                                     <ChatMessage 
                                         key={msg.id} 
                                         message={msg} 
-                                        isLastMessage={index === messages.length - 1}
                                         onOptionClick={handleOptionClick} 
                                         onDragDropQuizComplete={handleDragDropQuizComplete} 
                                         onWordSearchQuizComplete={handleWordSearchQuizComplete} 
                                         onWordSearchQuizSkip={handleWordSearchQuizSkip} 
                                         userAvatar={userAvatar} 
-                                        scrollToBottom={scrollToBottom}
                                     />
                                 ))}
                             </div>
