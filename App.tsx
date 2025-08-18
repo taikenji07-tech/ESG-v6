@@ -80,6 +80,18 @@ const ChatMessage: React.FC<{
         }
     }, [message.text, isLastMessage, message.sender, scrollToBottom]);
 
+    // This effect ensures that after the typing animation is complete,
+    // we perform one final scroll to make sure any newly rendered buttons or quizzes are in view.
+    useEffect(() => {
+        if (isTypingComplete && isLastMessage) {
+            const timer = setTimeout(() => {
+                scrollToBottom();
+            }, 100); // A small delay allows for button animations to start.
+            return () => clearTimeout(timer);
+        }
+    }, [isTypingComplete, isLastMessage, scrollToBottom]);
+
+
     const formatMessageContent = (text: string) => {
         return text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
