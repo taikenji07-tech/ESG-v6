@@ -29,6 +29,7 @@ export const translations: Translations = {
 
     // Toasts
     toast_q8_skipped: "Oops! You skipped the final boss question 😅 — no flawless victory this time!",
+    toast_copied: "Text copied to clipboard!",
 
     // Celebration Modal
     celebration_title: "Congratulations!",
@@ -148,7 +149,9 @@ export const translations: Translations = {
     post_certificate_text: "Your details have been submitted successfully! Congratulations again. What would you like to do next?",
     form_submission_error_text: "I'm sorry, there was an error submitting your information. Please try clicking the button again.",
     end_curriculum_text: "Thanks for learning with me! It was great chatting with you. Feel free to start over any time. Goodbye! 👋",
-    
+    share_prompt_text: "To make sharing easy, you can copy the text below and paste it into LinkedIn.",
+    linkedin_post_text: "I just completed the ESG Student Guide by RHB, scoring {score} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance",
+
     // Buttons
     btn_what_is_esg: "What is ESG?",
     btn_what_else_esg: "Got it! What's next?",
@@ -226,6 +229,9 @@ export const translations: Translations = {
     btn_end_curriculum: "End Session",
     btn_check_answer: "Check Answer",
     btn_finish_quiz: "Finish Quiz",
+    btn_copy_text: "Copy Text",
+    btn_open_linkedin: "Open LinkedIn",
+    btn_back_to_options: "Back to Final Options",
     'All items placed!': 'All items placed!',
     'Drop here': 'Drop here',
     'Type your answer here...': 'Type your answer here...',
@@ -295,6 +301,7 @@ export const translations: Translations = {
     
     // Toasts
     toast_q8_skipped: "Alamak! Anda langkau soalan 'final boss' 😅 — tiada kemenangan mutlak kali ini!",
+    toast_copied: "Teks disalin ke papan keratan!",
 
     // Celebration Modal
     celebration_title: "Tahniah!",
@@ -414,6 +421,8 @@ export const translations: Translations = {
     post_certificate_text: "Maklumat anda telah berjaya dihantar! Tahniah sekali lagi. Apa yang anda ingin lakukan seterusnya?",
     form_submission_error_text: "Maaf, terdapat ralat semasa menghantar maklumat anda. Sila cuba klik butang itu sekali lagi.",
     end_curriculum_text: "Terima kasih kerana belajar dengan saya! Seronok berbual dengan anda. Sila mulakan semula bila-bila masa. Selamat tinggal! 👋",
+    share_prompt_text: "Untuk memudahkan perkongsian, anda boleh salin teks di bawah dan tampalkannya di LinkedIn.",
+    linkedin_post_text: "Saya baru sahaja menyelesaikan Panduan Pelajar ESG oleh RHB, dengan skor {score} daripada 1000 mata, dan memperoleh sijil penyiapan! Ia adalah cara interaktif yang hebat untuk mempelajari prinsip-prinsip Alam Sekitar, Sosial dan Tadbir Urus. #ESG #Kelestarian #RHBCares #RHBInsurans",
     
     // Buttons
     btn_what_is_esg: "Apakah itu ESG?",
@@ -489,6 +498,9 @@ export const translations: Translations = {
     btn_end_curriculum: "Tamatkan Sesi",
     btn_check_answer: "Semak Jawapan",
     btn_finish_quiz: "Selesaikan Kuiz",
+    btn_copy_text: "Salin Teks",
+    btn_open_linkedin: "Buka LinkedIn",
+    btn_back_to_options: "Kembali ke Pilihan Akhir",
     'All items placed!': 'Semua item telah diletakkan!',
     'Drop here': 'Letak di sini',
     'Type your answer here...': 'Taip jawapan anda di sini...',
