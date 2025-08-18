@@ -51,7 +51,7 @@ const TypingIndicator = () => (
 
 const ChatMessage: React.FC<{
     message: Message;
-    onOptionClick: (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: 'share_linkedin' | 'show_certificate' | 'external_link') => void;
+    onOptionClick: (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: Message['buttons'][0]['type'], shareableText?: string) => void;
     onDragDropQuizComplete: (isCorrect: boolean) => void;
     onWordSearchQuizComplete: (foundWords: string[]) => void;
     onWordSearchQuizSkip: () => void;
@@ -87,12 +87,17 @@ const ChatMessage: React.FC<{
                 </div>
                 <div className="bot-bubble chat-bubble">
                     <div dangerouslySetInnerHTML={{ __html: formatMessageContent(message.text) }} />
+                     {message.shareableText && (
+                        <div className="p-4 my-3 rounded-lg bg-[var(--surface-a)] border border-[var(--border-color)] text-[var(--text-main)] text-sm whitespace-pre-wrap">
+                            {message.shareableText}
+                        </div>
+                    )}
                     {message.buttons && (
                         <div className="mt-4 space-y-2 animate-fade-in-up">
                             {message.buttons.map((button, index) => (
                                 <button
                                     key={index}
-                                    onClick={() => onOptionClick(button.nextNode, button.branchKey || '', button.text, button.type)}
+                                    onClick={() => onOptionClick(button.nextNode, button.branchKey || '', button.text, button.type, message.shareableText)}
                                     className="message-button"
                                 >
                                     {button.text}
@@ -316,8 +321,9 @@ const App: React.FC = () => {
                 quizCorrectAnswers: gameState.quizCorrectAnswers,
                 major: gameState.major,
             };
+            let messageShareableText: string | undefined = undefined;
 
-            if (currentNodeId === 'quiz_end' || currentNodeId === 'final_thanks_no_quiz') {
+            if ((currentNodeId === 'quiz_end' || currentNodeId === 'final_thanks_no_quiz') && !gameState.quizCompleted) {
                 const totalCo2 = userInteractionCount.current * 2.5;
                 const acMinutes = Math.round(totalCo2 / 6);
                 const carKm = (totalCo2 / 200).toFixed(2);
@@ -330,6 +336,8 @@ const App: React.FC = () => {
                 setIsTyping(true);
                 const aiReminder = await getAIImpactReminder(totalCo2, language);
                 replacements.aiReminder = aiReminder;
+            } else if (currentNodeId === 'share_prompt') {
+                messageShareableText = t('linkedin_post_text', { score: Math.round(gameState.score) });
             }
             
             setIsTyping(false);
@@ -458,7 +466,8 @@ const App: React.FC = () => {
                 sender: 'bot', 
                 text: messageText, 
                 buttons: messageButtons, 
-                quizData: quizData 
+                quizData: quizData,
+                shareableText: messageShareableText,
             });
 
             setInputVisible(node.type === 'PROMPT');
@@ -482,7 +491,7 @@ const App: React.FC = () => {
         setAppPhase('chat');
     };
 
-    const handleOptionClick = async (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: 'share_linkedin' | 'show_certificate' | 'external_link') => {
+    const handleOptionClick = async (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: Message['buttons'][0]['type'], shareableText?: string) => {
         userInteractionCount.current++;
         const lastMessage = messages[messages.length-1];
 
@@ -491,25 +500,31 @@ const App: React.FC = () => {
             return;
         }
 
-        if (type === 'share_linkedin') {
-            const postText = `I just completed the ESG Student Guide by RHB, scoring ${Math.round(gameState.score)} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance`;
-            
-            // The previous text-only share link (`/feed?shareActive=true...`) is unreliable on mobile apps.
-            // This switches to the more robust `shareArticle` endpoint.
-            // It requires a URL, creating a link preview, but correctly pre-fills the post text (`summary`) on both desktop and mobile.
-            const shareUrl = 'https://www.rhbinsurance.com.my/';
-            const title = 'RHB ESG Student Guide';
+        if (type === 'copy_text') {
+            const textToCopy = shareableText || t('linkedin_post_text', { score: Math.round(gameState.score) });
+            navigator.clipboard.writeText(textToCopy);
+            setToast(t('toast_copied'));
+            return;
+        }
 
-            const encodedUrl = encodeURIComponent(shareUrl);
-            const encodedTitle = encodeURIComponent(title);
-            const encodedSummary = encodeURIComponent(postText);
-            
-            const url = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedTitle}&summary=${encodedSummary}`;
-
+        if (type === 'open_linkedin') {
+            const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+            let url: string;
+            if (isMobile) {
+                url = 'https://www.linkedin.com/feed/';
+            } else {
+                const postText = t('linkedin_post_text', { score: Math.round(gameState.score) });
+                const shareUrl = 'https://www.rhbinsurance.com.my/';
+                const title = 'RHB ESG Student Guide';
+                const encodedUrl = encodeURIComponent(shareUrl);
+                const encodedTitle = encodeURIComponent(title);
+                const encodedSummary = encodeURIComponent(postText);
+                url = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedTitle}&summary=${encodedSummary}`;
+            }
             window.open(url, '_blank', 'noopener,noreferrer');
             return;
         }
-        
+
         if (nextNodeId === 'end_curriculum') {
             setShowCelebration(true);
             return;
@@ -532,7 +547,7 @@ const App: React.FC = () => {
                     sender: 'bot',
                     text: t('post_certificate_text'),
                     buttons: [
-                        { text: t('btn_share_score'), nextNode: '#', type: 'share_linkedin' },
+                        { text: t('btn_share_score'), nextNode: 'share_prompt' },
                         { text: t('btn_end_curriculum'), nextNode: 'end_curriculum' },
                         { text: t('btn_start_over'), nextNode: 'start' }
                     ]
