@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Header } from './Header';
 import { BackgroundEffects } from './BackgroundEffects';
 import { SendIcon, Avatar1Icon, Avatar2Icon, Avatar3Icon, Avatar4Icon } from './Icons';
@@ -192,15 +192,18 @@ const App: React.FC = () => {
         return text;
     };
 
-    const scrollToBottom = () => {
+    const scrollToBottom = useCallback(() => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTo({
                 top: chatContainerRef.current.scrollHeight,
                 behavior: 'smooth'
             });
         }
-    };
-    useEffect(scrollToBottom, [messages]);
+    }, []);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages, scrollToBottom]);
     
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
