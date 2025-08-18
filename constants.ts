@@ -1,6 +1,5 @@
 
 
-
 import type { DecisionTree, Badge, WordSearchPoolItem, DragDropQuizNode, WordSearchQuizNode } from './types';
 
 export const BADGES: Badge[] = [
@@ -466,9 +465,23 @@ export const decisionTree: DecisionTree = {
         isDynamic: true,
         buttons: [ 
             { text: "btn_claim_certificate", nextNode: '#', type: 'show_certificate' },
+            { text: "btn_share_score", nextNode: 'share_prompt' },
             { text: "btn_end_curriculum", nextNode: 'end_curriculum'},
             { text: "btn_start_over", nextNode: 'start' } 
         ]
+    },
+    'share_prompt': {
+        text: 'share_prompt_text',
+        type: 'ANSWER',
+        buttons: [
+            { text: 'btn_copy_text', nextNode: '#', type: 'copy_text' },
+            { text: 'btn_open_linkedin', nextNode: '#', type: 'open_linkedin' },
+            { text: 'btn_back_to_options', nextNode: 'quiz_end_revisit' }
+        ]
+    },
+    'quiz_end_revisit': {
+        type: 'REDIRECT',
+        nextNode: 'quiz_end'
     },
     'final_thanks_no_quiz': { 
         text: "final_thanks_no_quiz_text",
