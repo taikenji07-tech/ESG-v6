@@ -5,7 +5,7 @@ export interface Button {
     text: string;
     nextNode: NodeId;
     branchKey?: string;
-    type?: 'show_certificate' | 'copy_text' | 'open_linkedin' | 'external_link';
+    type?: 'show_certificate' | 'copy_text' | 'external_link';
 }
 
 export interface Branch {
@@ -133,4 +133,5 @@ export interface GameState {
     q7Attempts: number;
     q8Skipped: boolean;
     esgBreakdownCompleted: boolean;
+    certificateClaimed: boolean;
 }
