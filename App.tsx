@@ -152,21 +152,6 @@ const App: React.FC = () => {
         return text;
     };
 
-    const getButtonText = useCallback((key: string): string => {
-        // Humanization overrides from user requests
-        const overrides: Record<string, { en: string; ms: string }> = {
-            'btn_back_to_main_topics': { en: "Let's go back to the main topics.", ms: 'Mari kembali ke topik utama.'},
-            'btn_explore_other_pillars': { en: 'I want to see other pillars.', ms: 'Saya mahu melihat tunggak lain.'},
-            'btn_explore_other_relevance': { en: 'I want to explore other areas.', ms: 'Saya mahu meneroka bidang lain.'},
-        };
-    
-        if (overrides[key]) {
-            return overrides[key][language];
-        }
-        // Fallback to the standard translation function
-        return t(key);
-    }, [language, t]);
-
     const scrollToBottom = useCallback((behavior: 'smooth' | 'auto' = 'smooth') => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTo({
@@ -415,17 +400,17 @@ const App: React.FC = () => {
                     
                     if (!moreImportanceVisitedSet.has('matter_as_student')) {
                         messageButtons = [{
-                            text: getButtonText('btn_matter_as_student'),
+                            text: t('btn_matter_as_student'),
                             nextNode: 'matter_as_student_answer'
                         }];
                     } else {
                         messageButtons = [{
-                           text: getButtonText('btn_back_to_main_topics'),
+                           text: t('btn_back_to_main_topics'),
                            nextNode: 'end_branch'
                         }];
                     }
                 } else {
-                   messageButtons = node.buttons?.map(btn => ({ ...btn, text: getButtonText(btn.text) })) || [];
+                   messageButtons = node.buttons?.map(btn => ({ ...btn, text: t(btn.text) })) || [];
                 }
             } else if (node.type === 'ANSWER' && relevanceHubAnswerNodes.includes(currentNodeId)) {
                 const hubNode = decisionTree['relevance_hub'] as LoopQuestionNode;
@@ -440,11 +425,11 @@ const App: React.FC = () => {
 
                 if (tempVisitedBranches.size === Object.keys(hubBranches).length) {
                      messageButtons = [{
-                        text: getButtonText('btn_continue_to_career_opps'),
+                        text: t('btn_continue_to_career_opps'),
                         nextNode: hubNode.nextNode
                     }];
                 } else {
-                    messageButtons = node.buttons?.map(btn => ({ ...btn, text: getButtonText(btn.text) })) || [];
+                    messageButtons = node.buttons?.map(btn => ({ ...btn, text: t(btn.text) })) || [];
                 }
 
             } else if (node.type === 'QUIZ_DRAG_DROP' || node.type === 'QUIZ_WORD_SEARCH') {
@@ -496,7 +481,7 @@ const App: React.FC = () => {
                 
                 messageButtons = remainingBranches.map(key => ({
                     ...node.branches[key],
-                    text: getButtonText(node.branches[key].text),
+                    text: t(node.branches[key].text),
                     branchKey: key
                 }));
 
@@ -505,7 +490,7 @@ const App: React.FC = () => {
                 if (currentNodeId === 'quiz_end' && gameState.certificateClaimed) {
                     currentButtons = currentButtons.filter(btn => btn.type !== 'show_certificate');
                 }
-                messageButtons = currentButtons.map(btn => ({ ...btn, text: getButtonText(btn.text) }));
+                messageButtons = currentButtons.map(btn => ({ ...btn, text: t(btn.text) }));
             }
             
             addMessage({ 
@@ -522,7 +507,7 @@ const App: React.FC = () => {
         };
 
         processNode();
-    }, [currentNodeId, gameState.quizCompleted, language, appPhase, gameState.certificateClaimed, getButtonText, gameState.userName, gameState.major, gameState.score, gameState.quizCorrectAnswers]);
+    }, [currentNodeId, gameState.quizCompleted, language, appPhase, gameState.certificateClaimed]);
 
     const handleAvatarSelect = (avatarId: string) => {
         userInteractionCount.current++;
@@ -658,7 +643,7 @@ const App: React.FC = () => {
     const handleDragDropQuizComplete = (isCorrect: boolean) => {
         userInteractionCount.current++;
         const lastMessage = messages[messages.length - 1];
-        addMessage({ sender: 'user', text: getButtonText('btn_check_answer') }, lastMessage.id);
+        addMessage({ sender: 'user', text: t('btn_check_answer') }, lastMessage.id);
         
         setGameState(prev => ({ ...prev, lastQuestionId: 'quiz_q1' }));
 
@@ -669,7 +654,7 @@ const App: React.FC = () => {
     const handleWordSearchQuizComplete = () => {
         userInteractionCount.current++;
         const lastMessage = messages[messages.length - 1];
-        addMessage({ sender: 'user', text: getButtonText('btn_finish_quiz') }, lastMessage.id);
+        addMessage({ sender: 'user', text: t('btn_finish_quiz') }, lastMessage.id);
         
         const basePoints = QUIZ_POINTS['quiz_q8'];
         let pointsToAdd = basePoints;
@@ -694,7 +679,7 @@ const App: React.FC = () => {
     const handleWordSearchQuizSkip = () => {
         userInteractionCount.current++;
         const lastMessage = messages[messages.length - 1];
-        addMessage({ sender: 'user', text: getButtonText('btn_skip_question') }, lastMessage.id);
+        addMessage({ sender: 'user', text: t('btn_skip_question') }, lastMessage.id);
 
         setToast(t('toast_q8_skipped'));
 
