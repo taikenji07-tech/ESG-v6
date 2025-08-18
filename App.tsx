@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Header } from './Header';
 import { BackgroundEffects } from './BackgroundEffects';
@@ -12,7 +10,7 @@ import { ToastNotification } from './ToastNotification';
 import { ProgressMilestonePopup } from './ProgressMilestonePopup';
 import { decisionTree, quizOrder, progressNodes, totalProgressSteps, BADGES, WORD_SEARCH_POOL } from './constants';
 import { translations } from './translations';
-import type { Message, NodeId, DecisionTree, Node, Button, GameState, Badge, LoopQuestionNode, Language, DragDropQuizNode, WordSearchQuizNode, AnswerNode } from './types';
+import type { Message, NodeId, DecisionTree, Node, Button, GameState, Badge, LoopQuestionNode, Language, DragDropQuizNode, WordSearchQuizNode } from './types';
 import { getDynamicResponse, translateToMalay, submitToGoogleForm, validateEmailWithAI, getAIImpactReminder } from './geminiService';
 
 const avatarIconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
@@ -32,31 +30,56 @@ const QUIZ_POINTS: Record<string, number> = {
     'quiz_q8': 200,
 };
 
-const TypingIndicator = () => (
-    <div className="flex justify-start animate-slide-in-up">
-        <div className="flex items-start gap-3">
-            <div className="w-16 h-16 rounded-full bg-[var(--surface-b)] flex items-center justify-center flex-shrink-0 shadow-md border border-[var(--border-color)] overflow-hidden">
-                <img src="https://i.imgur.com/YAKWkLu.png" alt="Chatbot Avatar" className="w-full h-full object-cover transform -scale-x-100" />
-            </div>
-            <div className="bot-bubble chat-bubble">
-                <div className="flex gap-2 items-center h-6">
-                    <div className="w-2.5 h-2.5 bg-gray-400 rounded-full typing-dot"></div>
-                    <div className="w-2.5 h-2.5 bg-gray-400 rounded-full typing-dot"></div>
-                    <div className="w-2.5 h-2.5 bg-gray-400 rounded-full typing-dot"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-);
-
 const ChatMessage: React.FC<{
     message: Message;
-    onOptionClick: (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: Message['buttons'][0]['type'], shareableText?: string) => void;
+    isLastMessage: boolean;
+    onOptionClick: (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: 'show_certificate' | 'copy_text' | 'external_link') => void;
     onDragDropQuizComplete: (isCorrect: boolean) => void;
     onWordSearchQuizComplete: (foundWords: string[]) => void;
     onWordSearchQuizSkip: () => void;
     userAvatar: string;
-}> = ({ message, onOptionClick, onDragDropQuizComplete, onWordSearchQuizComplete, onWordSearchQuizSkip, userAvatar }) => {
+    scrollToBottom: () => void;
+}> = ({ message, isLastMessage, onOptionClick, onDragDropQuizComplete, onWordSearchQuizComplete, onWordSearchQuizSkip, userAvatar, scrollToBottom }) => {
+    
+    const [typedText, setTypedText] = useState(isLastMessage && message.sender === 'bot' ? '' : message.text);
+    const isTypingComplete = typedText.length === message.text.length;
+
+    useEffect(() => {
+        if (isLastMessage && message.sender === 'bot') {
+            setTypedText('');
+            let i = 0;
+            const text = message.text;
+            const speed = 10;
+
+            const typingInterval = setInterval(() => {
+                if (i < text.length) {
+                    const nextChar = text[i];
+                    if (nextChar === '<') {
+                        const tagEnd = text.indexOf('>', i);
+                        if (tagEnd !== -1) {
+                            const tag = text.substring(i, tagEnd + 1);
+                            setTypedText(prev => prev + tag);
+                            i += tag.length;
+                        } else {
+                           setTypedText(prev => prev + nextChar);
+                           i++;
+                        }
+                    } else {
+                        setTypedText(prev => prev + nextChar);
+                        i++;
+                    }
+                    scrollToBottom();
+                } else {
+                    clearInterval(typingInterval);
+                }
+            }, speed);
+
+            return () => clearInterval(typingInterval);
+        } else {
+            setTypedText(message.text);
+        }
+    }, [message.text, isLastMessage, message.sender, scrollToBottom]);
+
     const formatMessageContent = (text: string) => {
         return text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -86,18 +109,13 @@ const ChatMessage: React.FC<{
                      <img src="https://i.imgur.com/YAKWkLu.png" alt="Chatbot Avatar" className="w-full h-full object-cover transform -scale-x-100" />
                 </div>
                 <div className="bot-bubble chat-bubble">
-                    <div dangerouslySetInnerHTML={{ __html: formatMessageContent(message.text) }} />
-                     {message.shareableText && (
-                        <div className="p-4 my-3 rounded-lg bg-[var(--surface-a)] border border-[var(--border-color)] text-[var(--text-main)] text-sm whitespace-pre-wrap">
-                            {message.shareableText}
-                        </div>
-                    )}
-                    {message.buttons && (
+                    <div dangerouslySetInnerHTML={{ __html: formatMessageContent(typedText) }} />
+                    {isTypingComplete && message.buttons && (
                         <div className="mt-4 space-y-2 animate-fade-in-up">
                             {message.buttons.map((button, index) => (
                                 <button
                                     key={index}
-                                    onClick={() => onOptionClick(button.nextNode, button.branchKey || '', button.text, button.type, message.shareableText)}
+                                    onClick={() => onOptionClick(button.nextNode, button.branchKey || '', button.text, button.type)}
                                     className="message-button"
                                 >
                                     {button.text}
@@ -105,10 +123,10 @@ const ChatMessage: React.FC<{
                             ))}
                         </div>
                     )}
-                    {message.quizData && message.quizData.type === 'QUIZ_DRAG_DROP' && (
+                    {isTypingComplete && message.quizData && message.quizData.type === 'QUIZ_DRAG_DROP' && (
                         <DragDropQuiz node={message.quizData} onComplete={onDragDropQuizComplete} language={message.language!} />
                     )}
-                    {message.quizData && message.quizData.type === 'QUIZ_WORD_SEARCH' && (
+                    {isTypingComplete && message.quizData && message.quizData.type === 'QUIZ_WORD_SEARCH' && (
                         <WordSearchQuiz 
                             node={message.quizData} 
                             wordPool={WORD_SEARCH_POOL}
@@ -142,12 +160,12 @@ const App: React.FC = () => {
         q7Attempts: 0,
         q8Skipped: false,
         esgBreakdownCompleted: false,
+        certificateClaimed: false,
     };
 
     const [gameState, setGameState] = useState<GameState>(initialGameState);
     const [messages, setMessages] = useState<Message[]>([]);
     const [currentNodeId, setCurrentNodeId] = useState<NodeId>('start');
-    const [isTyping, setIsTyping] = useState(false);
     const [inputVisible, setInputVisible] = useState(false);
     const [inputValue, setInputValue] = useState('');
     const [visitedLoopBranches, setVisitedLoopBranches] = useState(new Set<string>());
@@ -182,7 +200,7 @@ const App: React.FC = () => {
             });
         }
     };
-    useEffect(scrollToBottom, [messages, isTyping]);
+    useEffect(scrollToBottom, [messages]);
     
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
@@ -313,7 +331,11 @@ const App: React.FC = () => {
             }
         }
         
-        const typingTimer = setTimeout(async () => {
+        const isMobileDevice = () => {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        };
+
+        const processNode = async () => {
             let messageText: string;
             const replacements: Record<string, string | number> = {
                 userName: gameState.userName,
@@ -321,9 +343,45 @@ const App: React.FC = () => {
                 quizCorrectAnswers: gameState.quizCorrectAnswers,
                 major: gameState.major,
             };
-            let messageShareableText: string | undefined = undefined;
 
-            if ((currentNodeId === 'quiz_end' || currentNodeId === 'final_thanks_no_quiz') && !gameState.quizCompleted) {
+            if (currentNodeId.startsWith('share_prompt')) {
+                const isMobile = isMobileDevice();
+                const shareText = t('linkedin_share_text', { score: Math.round(gameState.score) });
+                const backNode = currentNodeId === 'share_prompt_after_claim' ? 'post_claim_options_revisit' : 'quiz_end_revisit';
+
+                let shareButtons: Button[] = [];
+                if (isMobile) {
+                    shareButtons = [
+                        { text: t('btn_copy_text'), nextNode: '#', type: 'copy_text' },
+                        { text: t('btn_open_linkedin'), nextNode: 'https://www.linkedin.com/feed/', type: 'external_link' }
+                    ];
+                } else {
+                    const title = 'RHB ESG Student Guide';
+                    const url = 'https://www.rhbinsurance.com.my/';
+                    const encodedUrl = encodeURIComponent(url);
+                    const encodedTitle = encodeURIComponent(title);
+                    const encodedSummary = encodeURIComponent(shareText);
+                    const linkedInUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedTitle}&summary=${encodedSummary}`;
+                    shareButtons = [
+                        { text: t('btn_share_linkedin'), nextNode: linkedInUrl, type: 'external_link' }
+                    ];
+                }
+
+                const allButtons = [
+                    ...shareButtons,
+                    { text: t('btn_back_to_final_options'), nextNode: backNode }
+                ];
+
+                addMessage({
+                    sender: 'bot',
+                    text: t('share_prompt_text'),
+                    buttons: allButtons,
+                    shareableText: shareText
+                });
+                return;
+            }
+
+            if (currentNodeId === 'quiz_end' || currentNodeId === 'final_thanks_no_quiz') {
                 const totalCo2 = userInteractionCount.current * 2.5;
                 const acMinutes = Math.round(totalCo2 / 6);
                 const carKm = (totalCo2 / 200).toFixed(2);
@@ -332,16 +390,10 @@ const App: React.FC = () => {
                 replacements.acMinutes = acMinutes;
                 replacements.carKm = carKm;
 
-                // Keep typing indicator on while we fetch the AI reminder
-                setIsTyping(true);
                 const aiReminder = await getAIImpactReminder(totalCo2, language);
                 replacements.aiReminder = aiReminder;
-            } else if (currentNodeId === 'share_prompt') {
-                messageShareableText = t('linkedin_post_text', { score: Math.round(gameState.score) });
             }
             
-            setIsTyping(false);
-
             if (node.isDynamic && dynamicResponseTextRef.current) {
                 messageText = dynamicResponseTextRef.current
                     .replace(/{userName}/g, gameState.userName)
@@ -459,31 +511,28 @@ const App: React.FC = () => {
                 }));
 
             } else if ((node.type === 'QUESTION' || node.type === 'ANSWER') && node.buttons) {
-                messageButtons = node.buttons.map(btn => ({ ...btn, text: t(btn.text) }));
+                let currentButtons = node.buttons;
+                if (currentNodeId === 'quiz_end' && gameState.certificateClaimed) {
+                    currentButtons = currentButtons.filter(btn => btn.type !== 'show_certificate');
+                }
+                messageButtons = currentButtons.map(btn => ({ ...btn, text: t(btn.text) }));
             }
             
             addMessage({ 
                 sender: 'bot', 
                 text: messageText, 
                 buttons: messageButtons, 
-                quizData: quizData,
-                shareableText: messageShareableText,
+                quizData: quizData 
             });
 
             setInputVisible(node.type === 'PROMPT');
             if (node.type === 'PROMPT') {
                  setTimeout(() => document.getElementById('user-input')?.focus(), 100);
             }
-
-        }, 500);
-        
-        setIsTyping(true);
-
-        return () => {
-            clearTimeout(typingTimer);
         };
 
-    }, [currentNodeId, gameState.quizCompleted, language, appPhase]);
+        processNode();
+    }, [currentNodeId, gameState.quizCompleted, language, appPhase, gameState.certificateClaimed]);
 
     const handleAvatarSelect = (avatarId: string) => {
         userInteractionCount.current++;
@@ -491,7 +540,7 @@ const App: React.FC = () => {
         setAppPhase('chat');
     };
 
-    const handleOptionClick = async (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: Message['buttons'][0]['type'], shareableText?: string) => {
+    const handleOptionClick = async (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: 'show_certificate' | 'copy_text' | 'external_link') => {
         userInteractionCount.current++;
         const lastMessage = messages[messages.length-1];
 
@@ -501,30 +550,14 @@ const App: React.FC = () => {
         }
 
         if (type === 'copy_text') {
-            const textToCopy = shareableText || t('linkedin_post_text', { score: Math.round(gameState.score) });
-            navigator.clipboard.writeText(textToCopy);
-            setToast(t('toast_copied'));
-            return;
-        }
-
-        if (type === 'open_linkedin') {
-            const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-            let url: string;
-            if (isMobile) {
-                url = 'https://www.linkedin.com/feed/';
-            } else {
-                const postText = t('linkedin_post_text', { score: Math.round(gameState.score) });
-                const shareUrl = 'https://www.rhbinsurance.com.my/';
-                const title = 'RHB ESG Student Guide';
-                const encodedUrl = encodeURIComponent(shareUrl);
-                const encodedTitle = encodeURIComponent(title);
-                const encodedSummary = encodeURIComponent(postText);
-                url = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedTitle}&summary=${encodedSummary}`;
+            const messageWithText = messages.find(m => m.id === lastMessage.id);
+            if (messageWithText?.shareableText) {
+                navigator.clipboard.writeText(messageWithText.shareableText);
+                setToast(t('toast_copied'));
             }
-            window.open(url, '_blank', 'noopener,noreferrer');
             return;
         }
-
+        
         if (nextNodeId === 'end_curriculum') {
             setShowCelebration(true);
             return;
@@ -532,32 +565,22 @@ const App: React.FC = () => {
 
         if (type === 'show_certificate') {
             addMessage({ sender: 'user', text: buttonText }, lastMessage.id);
-            
-            setIsTyping(true);
-            const submissionSuccessful = await submitToGoogleForm({
+            setGameState(prev => ({...prev, certificateClaimed: true}));
+
+            // Fire-and-forget submission
+            submitToGoogleForm({
                 name: gameState.certificateName,
                 email: gameState.email,
                 university: gameState.university,
                 score: Math.round(gameState.score)
+            }).then(success => {
+                if (!success) {
+                    // Optionally handle submission failure, e.g., show a toast.
+                    console.error("Certificate submission failed in the background.");
+                }
             });
-            setIsTyping(false);
 
-            if (submissionSuccessful) {
-                addMessage({
-                    sender: 'bot',
-                    text: t('post_certificate_text'),
-                    buttons: [
-                        { text: t('btn_share_score'), nextNode: 'share_prompt' },
-                        { text: t('btn_end_curriculum'), nextNode: 'end_curriculum' },
-                        { text: t('btn_start_over'), nextNode: 'start' }
-                    ]
-                });
-            } else {
-                addMessage({
-                    sender: 'bot',
-                    text: t('form_submission_error_text')
-                });
-            }
+            setCurrentNodeId('post_claim_options');
             return;
         }
 
@@ -710,7 +733,6 @@ const App: React.FC = () => {
         if (lastNode.type !== 'PROMPT') return;
         
         if (currentNodeId === 'collect_email') {
-            setIsTyping(true);
             try {
                 const { isValid, reason, email: correctedEmail } = await validateEmailWithAI(message);
                 
@@ -734,8 +756,6 @@ const App: React.FC = () => {
                 }
                 addMessage({ sender: 'bot', text: errorMessage });
                 setInputVisible(true);
-            } finally {
-                setIsTyping(false);
             }
             return;
         }
@@ -757,7 +777,6 @@ const App: React.FC = () => {
         }
 
         if (lastNode.isDynamic) {
-             setIsTyping(true);
             try {
                 let contextPrompt = "";
                 const jsonInstruction = `Your primary task is to determine if the user's response is relevant to the question implicit in the instructions. Then, formulate a helpful response based on the context. Return your output as a JSON object with two keys: 'isRelevant' (boolean) and 'responseText' (string).`;
@@ -813,8 +832,6 @@ const App: React.FC = () => {
                 }
                 addMessage({ sender: 'bot', text: errorMessage });
                 setInputVisible(true);
-            } finally {
-                setIsTyping(false);
             }
         } else {
              setCurrentNodeId(lastNode.nextNode);
@@ -897,10 +914,19 @@ const App: React.FC = () => {
                     ) : (
                         <>
                             <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 custom-scrollbar">
-                                {messages.map((msg) => (
-                                <ChatMessage key={msg.id} message={msg} onOptionClick={handleOptionClick} onDragDropQuizComplete={handleDragDropQuizComplete} onWordSearchQuizComplete={handleWordSearchQuizComplete} onWordSearchQuizSkip={handleWordSearchQuizSkip} userAvatar={userAvatar} />
+                                {messages.map((msg, index) => (
+                                    <ChatMessage 
+                                        key={msg.id} 
+                                        message={msg} 
+                                        isLastMessage={index === messages.length - 1}
+                                        onOptionClick={handleOptionClick} 
+                                        onDragDropQuizComplete={handleDragDropQuizComplete} 
+                                        onWordSearchQuizComplete={handleWordSearchQuizComplete} 
+                                        onWordSearchQuizSkip={handleWordSearchQuizSkip} 
+                                        userAvatar={userAvatar} 
+                                        scrollToBottom={scrollToBottom}
+                                    />
                                 ))}
-                                {isTyping && <TypingIndicator />}
                             </div>
                             {inputVisible && (
                                 <div className="input-area-container p-4">
