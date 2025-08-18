@@ -306,10 +306,6 @@ const App: React.FC = () => {
             }
         }
         
-        const isMobileDevice = () => {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        };
-
         const processNode = async () => {
             let messageText: string;
             const replacements: Record<string, string | number> = {
@@ -320,28 +316,25 @@ const App: React.FC = () => {
             };
 
             if (currentNodeId.startsWith('share_prompt')) {
-                // Implement device-aware sharing.
-                // For desktop users, a direct pre-filled LinkedIn link is generated.
-                // For mobile users, a copy/paste flow is provided for a more reliable experience.
-                const isMobile = isMobileDevice();
                 const shareText = t('linkedin_share_text', { score: Math.round(gameState.score) });
                 const backNode = currentNodeId === 'share_prompt_after_claim' ? 'post_claim_options_revisit' : 'quiz_end_revisit';
+                
+                const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                let shareButtons: Button[];
 
-                let shareButtons: Button[] = [];
-                if (isMobile) {
+                if (isMobileDevice) {
+                    // Mobile: Use the reliable two-button copy/paste flow.
                     shareButtons = [
                         { text: t('btn_copy_text'), nextNode: '#', type: 'copy_text' },
                         { text: t('btn_open_linkedin'), nextNode: 'https://www.linkedin.com/feed/', type: 'external_link' }
                     ];
                 } else {
-                    const title = 'RHB ESG Student Guide';
-                    const url = 'https://www.rhbinsurance.com.my/';
-                    const encodedUrl = encodeURIComponent(url);
-                    const encodedTitle = encodeURIComponent(title);
-                    const encodedSummary = encodeURIComponent(shareText);
-                    const linkedInUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedTitle}&summary=${encodedSummary}`;
+                    // Desktop: Use the 'shareArticle' URL to pre-fill the post text directly for a classic sharing flow.
+                    const encodedText = encodeURIComponent(shareText);
+                    const linkedInShareUrl = `https://www.linkedin.com/shareArticle?mini=true&text=${encodedText}`;
+                    
                     shareButtons = [
-                        { text: t('btn_share_linkedin'), nextNode: linkedInUrl, type: 'external_link' }
+                        { text: t('btn_share_linkedin'), nextNode: linkedInShareUrl, type: 'external_link' }
                     ];
                 }
 
