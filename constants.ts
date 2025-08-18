@@ -1,5 +1,3 @@
-
-
 import type { DecisionTree, Badge, WordSearchPoolItem, DragDropQuizNode, WordSearchQuizNode } from './types';
 
 export const BADGES: Badge[] = [
@@ -470,18 +468,32 @@ export const decisionTree: DecisionTree = {
             { text: "btn_start_over", nextNode: 'start' } 
         ]
     },
-    'share_prompt': {
-        text: 'share_prompt_text',
-        type: 'ANSWER',
-        buttons: [
-            { text: 'btn_copy_text', nextNode: '#', type: 'copy_text' },
-            { text: 'btn_open_linkedin', nextNode: '#', type: 'open_linkedin' },
-            { text: 'btn_back_to_options', nextNode: 'quiz_end_revisit' }
-        ]
-    },
     'quiz_end_revisit': {
         type: 'REDIRECT',
         nextNode: 'quiz_end'
+    },
+    'post_claim_options': {
+        text: "certificate_sent_text",
+        type: 'ANSWER',
+        buttons: [
+            { text: "btn_share_score", nextNode: 'share_prompt_after_claim' },
+            { text: "btn_end_curriculum", nextNode: 'end_curriculum' },
+            { text: "btn_start_over", nextNode: 'start' }
+        ]
+    },
+    'post_claim_options_revisit': {
+        type: 'REDIRECT',
+        nextNode: 'post_claim_options'
+    },
+    'share_prompt': {
+        text: 'share_prompt_text', // This node is a trigger for dynamic buttons
+        type: 'ANSWER',
+        buttons: []
+    },
+    'share_prompt_after_claim': {
+        text: 'share_prompt_text', // This node is a trigger for dynamic buttons
+        type: 'ANSWER',
+        buttons: []
     },
     'final_thanks_no_quiz': { 
         text: "final_thanks_no_quiz_text",
