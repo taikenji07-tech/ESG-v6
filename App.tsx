@@ -320,6 +320,9 @@ const App: React.FC = () => {
             };
 
             if (currentNodeId.startsWith('share_prompt')) {
+                // Implement device-aware sharing.
+                // For desktop users, a direct pre-filled LinkedIn link is generated.
+                // For mobile users, a copy/paste flow is provided for a more reliable experience.
                 const isMobile = isMobileDevice();
                 const shareText = t('linkedin_share_text', { score: Math.round(gameState.score) });
                 const backNode = currentNodeId === 'share_prompt_after_claim' ? 'post_claim_options_revisit' : 'quiz_end_revisit';
