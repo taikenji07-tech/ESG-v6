@@ -1,4 +1,3 @@
-
 export type NodeId = string;
 export type Language = 'en' | 'ms';
 
@@ -6,7 +5,7 @@ export interface Button {
     text: string;
     nextNode: NodeId;
     branchKey?: string;
-    type?: 'show_certificate' | 'share_linkedin' | 'external_link';
+    type?: 'show_certificate' | 'copy_text' | 'open_linkedin' | 'external_link';
 }
 
 export interface Branch {
@@ -103,6 +102,7 @@ export interface Message {
     buttons?: Button[];
     quizData?: DragDropQuizNode | WordSearchQuizNode;
     language?: Language;
+    shareableText?: string;
 }
 
 // Gamification Types
