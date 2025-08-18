@@ -38,7 +38,7 @@ const ChatMessage: React.FC<{
     onWordSearchQuizComplete: (foundWords: string[]) => void;
     onWordSearchQuizSkip: () => void;
     userAvatar: string;
-    scrollToBottom: () => void;
+    scrollToBottom: (behavior?: 'smooth' | 'auto') => void;
 }> = ({ message, isLastMessage, onOptionClick, onDragDropQuizComplete, onWordSearchQuizComplete, onWordSearchQuizSkip, userAvatar, scrollToBottom }) => {
     
     const [typedText, setTypedText] = useState(isLastMessage && message.sender === 'bot' ? '' : message.text);
@@ -68,7 +68,7 @@ const ChatMessage: React.FC<{
                         setTypedText(prev => prev + nextChar);
                         i++;
                     }
-                    scrollToBottom();
+                    scrollToBottom('auto');
                 } else {
                     clearInterval(typingInterval);
                 }
@@ -204,18 +204,26 @@ const App: React.FC = () => {
         return text;
     };
 
-    const scrollToBottom = useCallback(() => {
+    const scrollToBottom = useCallback((behavior: 'smooth' | 'auto' = 'smooth') => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTo({
                 top: chatContainerRef.current.scrollHeight,
-                behavior: 'smooth'
+                behavior: behavior
             });
         }
     }, []);
 
     useEffect(() => {
         scrollToBottom();
-    }, [messages, scrollToBottom]);
+    }, [messages.length, scrollToBottom]);
+    
+    // Handles layout shifts when the virtual keyboard appears on mobile
+    useEffect(() => {
+        if (inputVisible) {
+            const timer = setTimeout(() => scrollToBottom(), 300); // 300ms delay to allow keyboard to animate
+            return () => clearTimeout(timer);
+        }
+    }, [inputVisible, scrollToBottom]);
     
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', theme);
