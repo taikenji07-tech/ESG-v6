@@ -29,7 +29,7 @@ export const translations: Translations = {
 
     // Toasts
     toast_q8_skipped: "Oops! You skipped the final boss question 😅 — no flawless victory this time!",
-    toast_copied: "Text copied to clipboard!",
+    toast_copied: "Copied to clipboard!",
 
     // Celebration Modal
     celebration_title: "Congratulations!",
@@ -146,11 +146,11 @@ export const translations: Translations = {
       "Quiz complete! You got **{quizCorrectAnswers} out of 8** questions correct. Your final score is **{score} out of 1000 points**!\n\n🌍 **Fun ESG Fact:** Your interactions created about **{co2}g of CO₂**. That's like running an A/C for **{acMinutes} minutes** or driving a car for **{carKm} km**!\n\n{aiReminder}",
     final_thanks_no_quiz_text:
       "No problem, {userName}! Your final score is **{score} out of 1000 points**. Thanks for learning with me today. ✨\n\n🌍 **Fun ESG Fact:** Your interactions created about **{co2}g of CO₂**. That's like running an A/C for **{acMinutes} minutes** or driving a car for **{carKm} km**!\n\n{aiReminder}",
-    post_certificate_text: "Your details have been submitted successfully! Congratulations again. What would you like to do next?",
+    certificate_sent_text: "✅ Your certificate will be sent to your email within 2–3 minutes.",
     form_submission_error_text: "I'm sorry, there was an error submitting your information. Please try clicking the button again.",
     end_curriculum_text: "Thanks for learning with me! It was great chatting with you. Feel free to start over any time. Goodbye! 👋",
-    share_prompt_text: "To make sharing easy, you can copy the text below and paste it into LinkedIn.",
-    linkedin_post_text: "I just completed the ESG Student Guide by RHB, scoring {score} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance",
+    share_prompt_text: "Awesome! Here's a post you can share to celebrate your achievement.",
+    linkedin_share_text: "I just completed the ESG Student Guide by RHB, scoring {score} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance",
 
     // Buttons
     btn_what_is_esg: "What is ESG?",
@@ -225,13 +225,14 @@ export const translations: Translations = {
     btn_continue: "Continue",
     btn_claim_certificate: "Claim Your Certificate",
     btn_share_score: "Share My Score",
+    btn_share_linkedin: "Share on LinkedIn",
+    btn_copy_text: "Copy Post Text",
+    btn_open_linkedin: "Open LinkedIn & Paste",
+    btn_back_to_final_options: "Back to Final Options",
     btn_start_over: "Start Over",
     btn_end_curriculum: "End Session",
     btn_check_answer: "Check Answer",
     btn_finish_quiz: "Finish Quiz",
-    btn_copy_text: "Copy Text",
-    btn_open_linkedin: "Open LinkedIn",
-    btn_back_to_options: "Back to Final Options",
     'All items placed!': 'All items placed!',
     'Drop here': 'Drop here',
     'Type your answer here...': 'Type your answer here...',
@@ -418,11 +419,11 @@ export const translations: Translations = {
       "Kuiz selesai! Anda mendapat **{quizCorrectAnswers} daripada 8** soalan dengan betul. Skor akhir anda ialah **{score} daripada 1000 mata**!\n\n🌍 **Fakta ESG Menarik:** Interaksi anda menghasilkan kira-kira **{co2}g CO₂**. Itu bersamaan dengan menghidupkan penghawa dingin selama **{acMinutes} minit** atau memandu kereta sejauh **{carKm} km**!\n\n{aiReminder}",
     final_thanks_no_quiz_text:
       "Tidak mengapa, {userName}! Skor akhir anda ialah **{score} daripada 1000 mata**. Terima kasih kerana belajar bersama saya hari ini. ✨\n\n🌍 **Fakta ESG Menarik:** Interaksi anda menghasilkan kira-kira **{co2}g CO₂**. Itu bersamaan dengan menghidupkan penghawa dingin selama **{acMinutes} minit** atau memandu kereta sejauh **{carKm} km**!\n\n{aiReminder}",
-    post_certificate_text: "Maklumat anda telah berjaya dihantar! Tahniah sekali lagi. Apa yang anda ingin lakukan seterusnya?",
+    certificate_sent_text: "✅ Sijil anda akan dihantar ke e-mel anda dalam masa 2–3 minit.",
     form_submission_error_text: "Maaf, terdapat ralat semasa menghantar maklumat anda. Sila cuba klik butang itu sekali lagi.",
     end_curriculum_text: "Terima kasih kerana belajar dengan saya! Seronok berbual dengan anda. Sila mulakan semula bila-bila masa. Selamat tinggal! 👋",
-    share_prompt_text: "Untuk memudahkan perkongsian, anda boleh salin teks di bawah dan tampalkannya di LinkedIn.",
-    linkedin_post_text: "Saya baru sahaja menyelesaikan Panduan Pelajar ESG oleh RHB, dengan skor {score} daripada 1000 mata, dan memperoleh sijil penyiapan! Ia adalah cara interaktif yang hebat untuk mempelajari prinsip-prinsip Alam Sekitar, Sosial dan Tadbir Urus. #ESG #Kelestarian #RHBCares #RHBInsurans",
+    share_prompt_text: "Hebat! Ini siaran yang boleh anda kongsi untuk meraikan pencapaian anda.",
+    linkedin_share_text: "Saya baru sahaja melengkapkan Panduan Pelajar ESG oleh RHB, dengan skor {score} daripada 1000 mata, dan memperoleh sijil tamat! Ia cara interaktif yang hebat untuk belajar tentang prinsip Alam Sekitar, Sosial, dan Tadbir Urus. #ESG #Kelestarian #RHBCares #RHBInsurance",
     
     // Buttons
     btn_what_is_esg: "Apakah itu ESG?",
@@ -494,13 +495,14 @@ export const translations: Translations = {
     btn_continue: "Teruskan",
     btn_claim_certificate: "Tuntut Sijil Anda",
     btn_share_score: "Kongsi Skor Saya",
+    btn_share_linkedin: "Kongsi di LinkedIn",
+    btn_copy_text: "Salin Teks Siaran",
+    btn_open_linkedin: "Buka LinkedIn & Tampal",
+    btn_back_to_final_options: "Kembali ke Pilihan Akhir",
     btn_start_over: "Mula Semula",
     btn_end_curriculum: "Tamatkan Sesi",
     btn_check_answer: "Semak Jawapan",
     btn_finish_quiz: "Selesaikan Kuiz",
-    btn_copy_text: "Salin Teks",
-    btn_open_linkedin: "Buka LinkedIn",
-    btn_back_to_options: "Kembali ke Pilihan Akhir",
     'All items placed!': 'Semua item telah diletakkan!',
     'Drop here': 'Letak di sini',
     'Type your answer here...': 'Taip jawapan anda di sini...',
