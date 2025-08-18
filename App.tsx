@@ -494,8 +494,9 @@ const App: React.FC = () => {
         if (type === 'share_linkedin') {
             const shareText = `I just completed the ESG Student Guide by RHB, scoring ${Math.round(gameState.score)} out of 1000 points, and earned a certificate of completion! It's a fantastic interactive way to learn about Environmental, Social, and Governance principles. #ESG #Sustainability #RHBCares #RHBInsurance`;
             
-            // This URL pre-fills a text post on LinkedIn. On mobile devices, this should
-            // open the LinkedIn app if it's installed, thanks to universal linking.
+            // This URL pre-fills a text post on LinkedIn. The link is structured to use
+            // universal linking, which means it will open the native LinkedIn app on
+            // mobile devices if installed (for a better UX) or a browser tab on desktop.
             const encodedText = encodeURIComponent(shareText);
             const url = `https://www.linkedin.com/feed/?shareActive=true&text=${encodedText}`;
 
