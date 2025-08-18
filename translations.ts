@@ -40,7 +40,7 @@ export const translations: Translations = {
     // Decision Tree Nodes
     start_text: "Hiii! 👋 I'm Capytron, your super friendly guide to all things ESG! I'm so excited to chat with you. To start, what should I call you?",
     collect_full_name_text: "It's a pleasure to meet you, **{userName}**! For the certificate we'll issue at the end, please provide your full name as you'd like it to appear.",
-    collect_email_text: "Thank you! And what's your email address? Please double-check it, as we'll send your certificate here.",
+    collect_email_text: "Thank you! And what's your email address? Please double-check it, as we'll send your certificate via email.",
     collect_university_text: "Which university are you from?",
     greeting_text: "Awesome, we're all set, **{userName}**! Let's dive in and learn some amazing things together. First up... what even **is** ESG?",
     what_is_esg_answer_text:
@@ -313,7 +313,7 @@ export const translations: Translations = {
     // Decision Tree Nodes
     start_text: "Hai! 👋 Saya Capytron, panduan mesra anda untuk semua perkara ESG. Saya sangat teruja untuk berbual dengan anda. Sebagai permulaan, saya patut panggil anda apa?",
     collect_full_name_text: "Gembira bertemu dengan anda, **{userName}**! Untuk sijil yang akan kami keluarkan nanti, sila berikan nama penuh anda seperti yang anda mahu ia tertera.",
-    collect_email_text: "Terima kasih! Dan apakah alamat e-mel anda? Sila semak semula, kerana kami akan menghantar sijil anda ke sini.",
+    collect_email_text: "Terima kasih! Dan apakah alamat e-mel anda? Sila semak semula, kerana kami akan menghantar sijil anda melalui e-mel.",
     collect_university_text: "Anda dari universiti mana?",
     greeting_text: "Baiklah, semua sudah sedia, **{userName}**! Jom kita mula dan belajar perkara-perkara hebat bersama. Pertama sekali... apa sebenarnya *ESG* tu?",
     what_is_esg_answer_text:
