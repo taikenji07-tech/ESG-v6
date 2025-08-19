@@ -12,7 +12,7 @@ import { ProgressMilestonePopup } from './ProgressMilestonePopup';
 import { decisionTree, quizOrder, progressNodes, totalProgressSteps, BADGES, WORD_SEARCH_POOL } from './constants';
 import { translations } from './translations';
 import type { Message, NodeId, DecisionTree, Node, Button, GameState, Badge, LoopQuestionNode, Language, DragDropQuizNode, WordSearchQuizNode } from './types';
-import { getDynamicResponse, translateToMalay, submitToGoogleForm, validateEmailWithAI, getAIImpactReminder } from './geminiService';
+import { getDynamicResponse, translateToMalay, submitToGoogleForm, validateEmailWithAI, getAIImpactReminder, validatePhoneNumberWithAI } from './geminiService';
 
 const avatarIconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
     avatar1: Avatar1Icon,
@@ -110,6 +110,7 @@ const App: React.FC = () => {
         userName: '',
         certificateName: '',
         email: '',
+        phoneNumber: '',
         university: '',
         major: '',
         lastQuestionId: '',
@@ -259,7 +260,10 @@ const App: React.FC = () => {
                     const oldProgressScore = Math.floor((prev.visitedProgressNodes.size / totalProgressSteps) * 200);
                     const newProgressScore = Math.floor((newVisited.size / totalProgressSteps) * 200);
                     const pointsFromLearning = newProgressScore - oldProgressScore;
-                    const newTotalScore = Math.min(1000, prev.score + pointsFromLearning);
+                    
+                    // Cap the learning score at 190 before the final curriculum completion.
+                    // The jump to 200 is handled when the main_loop is fully completed.
+                    const newTotalScore = Math.min(190, prev.score + pointsFromLearning);
                     
                     return {
                         ...prev,
@@ -544,7 +548,8 @@ const App: React.FC = () => {
                 name: gameState.certificateName,
                 email: gameState.email,
                 university: gameState.university,
-                score: Math.round(gameState.score)
+                score: Math.round(gameState.score),
+                phoneNumber: gameState.phoneNumber,
             }).then(success => {
                 if (!success) {
                     // Optionally handle submission failure, e.g., show a toast.
@@ -619,11 +624,8 @@ const App: React.FC = () => {
                     newVisitedSecondary[currentNodeId] = newSet;
 
                     if (currentNodeId === 'esg_breakdown_hub' && newSet.size === 3 && !prev.esgBreakdownCompleted) {
-                        const scoreCap = prev.q8Skipped ? 999 : 1000;
-                        const newScore = Math.min(scoreCap, prev.score + 23);
                         return {
                             ...prev,
-                            score: newScore,
                             esgBreakdownCompleted: true,
                             visitedSecondaryBranches: newVisitedSecondary
                         };
@@ -722,6 +724,34 @@ const App: React.FC = () => {
                 }
             } catch (error) {
                 console.error("Error during email validation:", error);
+                let errorMessage = "I had a little trouble processing that. Could you please try again?";
+                 if (language === 'ms') {
+                    errorMessage = await translateToMalay(errorMessage);
+                }
+                addMessage({ sender: 'bot', text: errorMessage });
+                setInputVisible(true);
+            }
+            return;
+        }
+        
+        if (currentNodeId === 'collect_phone_number') {
+            try {
+                const { isValid, reason, phoneNumber: correctedPhoneNumber } = await validatePhoneNumberWithAI(message);
+                
+                if (isValid) {
+                    const finalPhoneNumber = correctedPhoneNumber || message;
+                    setGameState(prev => ({ ...prev, phoneNumber: finalPhoneNumber }));
+                    setCurrentNodeId(lastNode.nextNode);
+                } else {
+                    let responseText = reason;
+                    if (language === 'ms') {
+                        responseText = await translateToMalay(responseText);
+                    }
+                    addMessage({ sender: 'bot', text: responseText });
+                    setInputVisible(true);
+                }
+            } catch (error) {
+                console.error("Error during phone validation:", error);
                 let errorMessage = "I had a little trouble processing that. Could you please try again?";
                  if (language === 'ms') {
                     errorMessage = await translateToMalay(errorMessage);
