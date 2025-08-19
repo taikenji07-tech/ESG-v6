@@ -1,3 +1,4 @@
+
 import type { DecisionTree, Badge, WordSearchPoolItem, DragDropQuizNode, WordSearchQuizNode } from './types';
 
 export const BADGES: Badge[] = [
@@ -227,6 +228,11 @@ export const decisionTree: DecisionTree = {
         text: "", // AI will provide this text
         type: 'ANSWER',
         isDynamic: true,
+        buttons: [ { text: "btn_understood", nextNode: 'end_branch' } ]
+    },
+    'what_else_student_failed': {
+        text: "what_else_student_failed_text",
+        type: 'ANSWER',
         buttons: [ { text: "btn_understood", nextNode: 'end_branch' } ]
     },
 
