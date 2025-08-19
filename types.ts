@@ -1,3 +1,4 @@
+
 export type NodeId = string;
 export type Language = 'en' | 'ms';
 
@@ -134,4 +135,5 @@ export interface GameState {
     q8Skipped: boolean;
     esgBreakdownCompleted: boolean;
     certificateClaimed: boolean;
+    whatElseAttempts: number;
 }
