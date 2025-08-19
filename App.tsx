@@ -121,6 +121,7 @@ const App: React.FC = () => {
         q8Skipped: false,
         esgBreakdownCompleted: false,
         certificateClaimed: false,
+        whatElseAttempts: 0,
     };
 
     const [gameState, setGameState] = useState<GameState>(initialGameState);
@@ -784,6 +785,10 @@ const App: React.FC = () => {
                             quizCorrectAnswers: prev.quizCorrectAnswers + 1,
                         }));
                     }
+                    
+                    if (currentNodeId === 'what_else_student_prompt') {
+                        setGameState(prev => ({ ...prev, whatElseAttempts: 0 }));
+                    }
 
                     if (currentNodeId === 'degree_major_prompt') {
                         setGameState(prev => ({...prev, major: message}));
@@ -791,6 +796,14 @@ const App: React.FC = () => {
                     dynamicResponseTextRef.current = finalResponseText;
                     setCurrentNodeId(lastNode.nextNode);
                 } else {
+                    if (currentNodeId === 'what_else_student_prompt') {
+                        const newAttempts = gameState.whatElseAttempts + 1;
+                        setGameState(prev => ({ ...prev, whatElseAttempts: newAttempts }));
+                        if (newAttempts >= 5) {
+                            setCurrentNodeId('what_else_student_failed');
+                            return; // Exit after setting the failure node
+                        }
+                    }
                     addMessage({sender: 'bot', text: finalResponseText});
                     setInputVisible(true);
                 }
