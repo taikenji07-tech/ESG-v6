@@ -385,16 +385,7 @@ const App: React.FC = () => {
                 const hubNode = decisionTree['esg_breakdown_hub'] as LoopQuestionNode;
                 const visitedBranches = gameState.visitedSecondaryBranches['esg_breakdown_hub'] || new Set();
 
-                const hubBranches = hubNode.branches;
-                const currentBranchKey = Object.keys(hubBranches).find(key => hubBranches[key].nextNode === currentNodeId);
-                
-                // We use a temporary set that includes the *current* branch to check if it's the last one
-                const tempVisited = new Set(visitedBranches);
-                if (currentBranchKey) {
-                    tempVisited.add(currentBranchKey);
-                }
-
-                if (tempVisited.size === Object.keys(hubNode.branches).length) {
+                if (visitedBranches.size === Object.keys(hubNode.branches).length) {
                     // All E, S, G branches have been visited. Only show the "continue" button.
                     messageButtons = node.buttons
                         ?.filter(btn => btn.nextNode === 'main_loop')
@@ -406,15 +397,8 @@ const App: React.FC = () => {
             } else if (node.type === 'ANSWER' && personalEsgPillarNodes.includes(currentNodeId)) {
                 const hubNode = decisionTree['personal_esg_pillars_hub'] as LoopQuestionNode;
                 const visitedPillars = gameState.visitedSecondaryBranches['personal_esg_pillars_hub'] || new Set();
-
-                const hubBranches = hubNode.branches;
-                const currentPillarKey = Object.keys(hubBranches).find(key => hubBranches[key].nextNode === currentNodeId);
-                const tempVisitedPillars = new Set(visitedPillars);
-                if (currentPillarKey) {
-                   tempVisitedPillars.add(currentPillarKey);
-                }
                
-                if (tempVisitedPillars.size === Object.keys(hubNode.branches).length) {
+                if (visitedPillars.size === Object.keys(hubNode.branches).length) {
                     const moreImportanceVisitedSet = gameState.visitedSecondaryBranches['more_importance_esg'] || new Set();
                     
                     if (!moreImportanceVisitedSet.has('matter_as_student')) {
@@ -435,14 +419,7 @@ const App: React.FC = () => {
                 const hubNode = decisionTree['relevance_hub'] as LoopQuestionNode;
                 const visitedBranches = gameState.visitedSecondaryBranches['relevance_hub'] || new Set();
                 
-                const hubBranches = hubNode.branches;
-                const currentBranchKey = Object.keys(hubBranches).find(key => hubBranches[key].nextNode === currentNodeId);
-                const tempVisitedBranches = new Set(visitedBranches);
-                if (currentBranchKey) {
-                    tempVisitedBranches.add(currentBranchKey);
-                }
-
-                if (tempVisitedBranches.size === Object.keys(hubBranches).length) {
+                if (visitedBranches.size === Object.keys(hubNode.branches).length) {
                      messageButtons = [{
                         text: t('btn_continue_to_career_opps'),
                         nextNode: hubNode.nextNode
@@ -526,7 +503,7 @@ const App: React.FC = () => {
         };
 
         processNode();
-    }, [currentNodeId, gameState.quizCompleted, language, appPhase, gameState.certificateClaimed]);
+    }, [currentNodeId, gameState.quizCompleted, language, appPhase, gameState.certificateClaimed, gameState.visitedSecondaryBranches]);
 
     const handleAvatarSelect = (avatarId: string) => {
         userInteractionCount.current++;
