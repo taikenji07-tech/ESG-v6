@@ -314,7 +314,11 @@ export const decisionTree: DecisionTree = {
         text: "", // AI will provide this text
         isDynamic: true,
         type: 'ANSWER',
-        buttons: [ { text: 'btn_got_it_thanks', nextNode: 'end_secondary_branch_career' } ]
+        buttons: [ 
+            { text: 'btn_got_it_thanks', nextNode: 'end_secondary_branch_career' },
+            { text: "btn_ask_more_major", nextNode: 'ask_more_major_prompt' },
+            { text: "btn_ask_about_other_majors", nextNode: 'degree_major_prompt'}
+        ]
     },
 
 
