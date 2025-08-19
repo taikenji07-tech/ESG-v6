@@ -377,10 +377,33 @@ const App: React.FC = () => {
             let messageButtons: Button[] | undefined = undefined;
             let quizData: DragDropQuizNode | WordSearchQuizNode | undefined = undefined;
 
+            const esgBreakdownNodes = ['esg_breakdown_e', 'esg_breakdown_s', 'esg_breakdown_g'];
             const personalEsgPillarNodes = ['personal_esg_pillar_e_answer', 'personal_esg_pillar_s_answer', 'personal_esg_pillar_g_answer'];
             const relevanceHubAnswerNodes = ['relevance_career_answer', 'relevance_consumer_answer', 'relevance_community_answer'];
 
-            if (node.type === 'ANSWER' && personalEsgPillarNodes.includes(currentNodeId)) {
+            if (node.type === 'ANSWER' && esgBreakdownNodes.includes(currentNodeId)) {
+                const hubNode = decisionTree['esg_breakdown_hub'] as LoopQuestionNode;
+                const visitedBranches = gameState.visitedSecondaryBranches['esg_breakdown_hub'] || new Set();
+
+                const hubBranches = hubNode.branches;
+                const currentBranchKey = Object.keys(hubBranches).find(key => hubBranches[key].nextNode === currentNodeId);
+                
+                // We use a temporary set that includes the *current* branch to check if it's the last one
+                const tempVisited = new Set(visitedBranches);
+                if (currentBranchKey) {
+                    tempVisited.add(currentBranchKey);
+                }
+
+                if (tempVisited.size === Object.keys(hubNode.branches).length) {
+                    // All E, S, G branches have been visited. Only show the "continue" button.
+                    messageButtons = node.buttons
+                        ?.filter(btn => btn.nextNode === 'main_loop')
+                        .map(btn => ({ ...btn, text: t(btn.text) }));
+                } else {
+                    // Still branches left to visit, show all default buttons.
+                    messageButtons = node.buttons?.map(btn => ({ ...btn, text: t(btn.text) })) || [];
+                }
+            } else if (node.type === 'ANSWER' && personalEsgPillarNodes.includes(currentNodeId)) {
                 const hubNode = decisionTree['personal_esg_pillars_hub'] as LoopQuestionNode;
                 const visitedPillars = gameState.visitedSecondaryBranches['personal_esg_pillars_hub'] || new Set();
 
