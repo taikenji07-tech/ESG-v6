@@ -88,13 +88,14 @@ export const translateToMalay = async (textToTranslate: string): Promise<string>
  * @param data - The user data to submit.
  * @returns {Promise<boolean>} - True on success, false on failure.
  */
-export const submitToGoogleForm = async (data: { name: string; email: string; university: string; score: number; }) => {
+export const submitToGoogleForm = async (data: { name: string; email: string; university: string; score: number; phoneNumber: string; }) => {
     const formUrl = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLScJmjieW8wMXLzRNP6qcwbmIGKgzWAdxG6lLjxyN1YJ28Bc8Q/formResponse';
     const formData = new FormData();
     formData.append('entry.308986988', data.name);
     formData.append('emailAddress', data.email);
     formData.append('entry.1713430391', data.university);
     formData.append('entry.1994504760', String(data.score));
+    formData.append('entry.823726534', data.phoneNumber);
 
     try {
         await fetch(formUrl, {
@@ -165,6 +166,64 @@ Respond ONLY with a JSON object with the following schema: { "isValid": boolean,
         isValid: false,
         reason: "I'm having a little trouble checking that email. Could you please enter it again?",
         email: null
+    };
+  }
+};
+
+/**
+ * Validates a phone number using the Gemini API.
+ * @param {string} phone - The phone number string to validate.
+ * @returns {Promise<{ isValid: boolean; reason: string; phoneNumber: string | null; }>} - A promise that resolves to the validation result.
+ */
+export const validatePhoneNumberWithAI = async (phone: string): Promise<{ isValid: boolean; reason: string; phoneNumber: string | null; }> => {
+  try {
+    const systemInstruction = `You are an expert phone number validator, specializing in Malaysian and international formats. Your task is to analyze the user's input.
+- If it is a valid phone number (e.g., "0123456789", "+60123456789", "03-12345678"), return isValid: true and a confirmation message. Standardize the number to a simple format like "0123456789" if possible.
+- If it is invalid (e.g., has letters, too few/many digits), return isValid: false and provide a brief, friendly reason why it's invalid.
+- Respond ONLY with a JSON object with the following schema: { "isValid": boolean, "reason": string, "phoneNumber": string | null }`;
+
+    const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: `Phone number to validate: "${phone}"`,
+        config: {
+            systemInstruction: systemInstruction,
+            responseMimeType: "application/json",
+            responseSchema: {
+                type: Type.OBJECT,
+                properties: {
+                    isValid: {
+                        type: Type.BOOLEAN,
+                        description: "True if the phone number is valid, false otherwise."
+                    },
+                    reason: {
+                        type: Type.STRING,
+                        description: "A brief, friendly explanation for why the number is invalid, or a confirmation message if valid."
+                    },
+                    phoneNumber: {
+                        type: Type.STRING,
+                        description: "The corrected/standardized phone number if valid, otherwise null."
+                    }
+                },
+                required: ["isValid", "reason"]
+            }
+        }
+    });
+
+    const jsonStr = response.text.trim();
+    const parsed = JSON.parse(jsonStr);
+
+    return {
+        isValid: parsed.isValid ?? false,
+        reason: parsed.reason ?? "Sorry, that doesn't look like a valid phone number. Please try again.",
+        phoneNumber: parsed.phoneNumber ?? null
+    };
+
+  } catch (error) {
+    console.error("Error calling Gemini API for phone validation:", error);
+    return {
+        isValid: false,
+        reason: "I'm having a little trouble checking that phone number. Could you please enter it again?",
+        phoneNumber: null
     };
   }
 };
