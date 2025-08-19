@@ -28,6 +28,7 @@ export const progressNodes = new Set([
   'start',
   'collect_full_name',
   'collect_email',
+  'collect_phone_number',
   'collect_university',
   'greeting',
   'what_is_esg_answer',
@@ -78,6 +79,11 @@ export const decisionTree: DecisionTree = {
     },
     'collect_email': {
         text: "collect_email_text",
+        type: 'PROMPT',
+        nextNode: 'collect_phone_number',
+    },
+    'collect_phone_number': {
+        text: "collect_phone_number_text",
         type: 'PROMPT',
         nextNode: 'collect_university',
     },
