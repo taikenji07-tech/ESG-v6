@@ -89,12 +89,12 @@ export const translateToMalay = async (textToTranslate: string): Promise<string>
  * @returns {Promise<boolean>} - True on success, false on failure.
  */
 export const submitToGoogleForm = async (data: { name: string; email: string; university: string; score: number; phoneNumber: string; }) => {
-    const formUrl = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLScJmjieW8wMXLzRNP6qcwbmIGKgzWAdxG6lLjxyN1YJ28Bc8Q/formResponse';
+    const formUrl = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSd7M4iBTSwx2p-ZU6SKo5SiNag1XzNJrK7KixRcwSmesgnccw/formResponse';
     const formData = new FormData();
-    formData.append('entry.308986988', data.name);
+    formData.append('entry.518076302', data.name);
     formData.append('emailAddress', data.email);
-    formData.append('entry.1713430391', data.university);
-    formData.append('entry.1994504760', String(data.score));
+    formData.append('entry.1019666774', data.university);
+    formData.append('entry.124774752', String(data.score));
     formData.append('entry.823726534', data.phoneNumber);
 
     try {
