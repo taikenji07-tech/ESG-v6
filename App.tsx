@@ -472,6 +472,8 @@ const App: React.FC = () => {
                                revisitTextKey = 'personal_esg_pillars_hub_revisit_text';
                            } else if (currentNodeId === 'relevance_hub') {
                                revisitTextKey = 'relevance_hub_revisit_text';
+                           } else if (currentNodeId === 'anything_else_hub') {
+                               revisitTextKey = 'anything_else_hub_revisit_text';
                            } else {
                                revisitTextKey = 'more_importance_esg_revisit_text';
                            }
