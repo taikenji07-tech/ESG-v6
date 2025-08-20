@@ -62,6 +62,12 @@ export const progressNodes = new Set([
   'personal_esg_pillar_e_answer',
   'personal_esg_pillar_s_answer',
   'personal_esg_pillar_g_answer',
+  'anything_else_hub',
+  'anything_else_not_just_environmental',
+  'anything_else_measurable',
+  'anything_else_career_currency',
+  'anything_else_long_term',
+  'anything_else_small_move',
 ]);
 
 export const totalProgressSteps = progressNodes.size;
@@ -151,7 +157,8 @@ export const decisionTree: DecisionTree = {
             'why_important': { text: "btn_why_important", nextNode: 'why_important_answer' },
             'what_can_i_do': { text: "btn_what_can_i_do", nextNode: 'what_can_i_do_answer' },
             'how_relevant': { text: "btn_how_relevant", nextNode: 'how_relevant_answer' },
-            'do_i_matter': { text: "btn_do_i_matter", nextNode: 'do_i_matter_answer' }
+            'do_i_matter': { text: "btn_do_i_matter", nextNode: 'do_i_matter_answer' },
+            'anything_else': { text: "btn_anything_else", nextNode: 'anything_else_hub' }
         },
         nextNode: 'learning_complete_prompt_quiz'
     },
@@ -341,6 +348,66 @@ export const decisionTree: DecisionTree = {
             { text: "btn_watch_video", nextNode: 'https://www.instagram.com/reel/DMIoZCLh1zF/?utm_source=ig_web_button_share_sheet', type: 'external_link' },
             { text: "btn_empowering", nextNode: 'end_branch' } 
         ]
+    },
+
+    // Branch 5: Anything Else
+    'anything_else_hub': {
+        text: 'anything_else_hub_text',
+        type: 'LOOP_QUESTION',
+        parentLoop: 'main_loop',
+        nextNode: 'anything_else_end',
+        branches: {
+            'not_just_environmental': { text: 'btn_not_just_environmental', nextNode: 'anything_else_not_just_environmental' },
+            'measurable': { text: 'btn_measurable', nextNode: 'anything_else_measurable' },
+            'career_currency': { text: 'btn_career_currency', nextNode: 'anything_else_career_currency' },
+            'long_term': { text: 'btn_long_term', nextNode: 'anything_else_long_term' },
+            'small_move': { text: 'btn_small_move', nextNode: 'anything_else_small_move' },
+        }
+    },
+    'anything_else_not_just_environmental': {
+        text: 'anything_else_not_just_environmental_text',
+        type: 'ANSWER',
+        buttons: [
+            { text: 'btn_explore_more_topics', nextNode: 'anything_else_hub' },
+            { text: 'btn_back_to_main_topics', nextNode: 'main_loop' }
+        ]
+    },
+    'anything_else_measurable': {
+        text: 'anything_else_measurable_text',
+        type: 'ANSWER',
+        buttons: [
+            { text: 'btn_explore_more_topics', nextNode: 'anything_else_hub' },
+            { text: 'btn_back_to_main_topics', nextNode: 'main_loop' }
+        ]
+    },
+    'anything_else_career_currency': {
+        text: 'anything_else_career_currency_text',
+        type: 'ANSWER',
+        buttons: [
+            { text: 'btn_explore_more_topics', nextNode: 'anything_else_hub' },
+            { text: 'btn_back_to_main_topics', nextNode: 'main_loop' }
+        ]
+    },
+    'anything_else_long_term': {
+        text: 'anything_else_long_term_text',
+        type: 'ANSWER',
+        buttons: [
+            { text: 'btn_explore_more_topics', nextNode: 'anything_else_hub' },
+            { text: 'btn_back_to_main_topics', nextNode: 'main_loop' }
+        ]
+    },
+    'anything_else_small_move': {
+        text: 'anything_else_small_move_text',
+        type: 'ANSWER',
+        buttons: [
+            { text: 'btn_explore_more_topics', nextNode: 'anything_else_hub' },
+            { text: 'btn_back_to_main_topics', nextNode: 'main_loop' }
+        ]
+    },
+    'anything_else_end': {
+        text: "all_subtopics_done_prompt",
+        type: 'ANSWER',
+        buttons: [ { text: "btn_back_to_main_topics", nextNode: 'end_branch' } ]
     },
     
     // --- REDIRECTS & ENDPOINTS ---
