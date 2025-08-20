@@ -1,4 +1,5 @@
 
+
 import type { DecisionTree, Badge, WordSearchPoolItem, DragDropQuizNode, WordSearchQuizNode } from './types';
 
 export const BADGES: Badge[] = [
@@ -442,14 +443,14 @@ export const decisionTree: DecisionTree = {
         text: "quiz_q1_text_dd",
         type: 'QUIZ_DRAG_DROP',
         items: [
-            { id: 'item_E', textKey: 'dd_label_E' },
-            { id: 'item_S', textKey: 'dd_label_S' },
-            { id: 'item_G', textKey: 'dd_label_G' },
+            { id: 'item_E', textKey: 'dd_item_E_letter' },
+            { id: 'item_S', textKey: 'dd_item_S_letter' },
+            { id: 'item_G', textKey: 'dd_item_G_letter' },
         ],
         targets: [
-            { id: 'E', labelKey: 'dd_item_E', correctItemId: 'item_E' },
-            { id: 'S', labelKey: 'dd_item_S', correctItemId: 'item_S' },
-            { id: 'G', labelKey: 'dd_item_G', correctItemId: 'item_G' },
+            { id: 'E', labelKey: 'dd_target_E_desc', correctItemId: 'item_E' },
+            { id: 'S', labelKey: 'dd_target_S_desc', correctItemId: 'item_S' },
+            { id: 'G', labelKey: 'dd_target_G_desc', correctItemId: 'item_G' },
         ],
         nextNode: 'quiz_q1_correct',
         incorrectNextNode: 'quiz_q1_incorrect'
@@ -473,9 +474,9 @@ export const decisionTree: DecisionTree = {
         text: "quiz_q3_text",
         type: 'QUESTION',
         buttons: [
-            { text: "btn_digital_habit_1", nextNode: 'quiz_q3_correct' },
-            { text: "btn_digital_habit_2", nextNode: 'quiz_q3_incorrect' },
-            { text: "btn_digital_habit_3", nextNode: 'quiz_q3_incorrect' }
+            { text: "btn_digital_habit_sd", nextNode: 'quiz_q3_correct' },
+            { text: "btn_digital_habit_leave_on", nextNode: 'quiz_q3_incorrect' },
+            { text: "btn_digital_habit_cloud", nextNode: 'quiz_q3_incorrect' }
         ]
     },
     'quiz_q3_correct': { text: "quiz_q3_correct_text", isCorrect: true, type: 'ANSWER', buttons: [ { text: "btn_next_question", nextNode: 'quiz_q4' } ] },
@@ -485,9 +486,9 @@ export const decisionTree: DecisionTree = {
         text: "quiz_q4_text",
         type: 'QUESTION',
         buttons: [
-            { text: "btn_governance_action_1", nextNode: 'quiz_q4_incorrect' },
-            { text: "btn_governance_action_2", nextNode: 'quiz_q4_correct' },
-            { text: "btn_governance_action_3", nextNode: 'quiz_q4_incorrect' }
+            { text: "btn_governance_everyday_1", nextNode: 'quiz_q4_incorrect' },
+            { text: "btn_governance_everyday_2", nextNode: 'quiz_q4_correct' },
+            { text: "btn_governance_everyday_3", nextNode: 'quiz_q4_incorrect' }
         ]
     },
     'quiz_q4_correct': { text: "quiz_q4_correct_text", isCorrect: true, type: 'ANSWER', buttons: [ { text: "btn_next_question", nextNode: 'quiz_q5' } ] },
