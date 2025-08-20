@@ -124,6 +124,7 @@ export interface GameState {
     userName: string;
     certificateName: string;
     email: string;
+    phoneNumber: string;
     university: string;
     major: string;
     lastQuestionId: string;
