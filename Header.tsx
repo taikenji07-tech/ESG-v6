@@ -34,8 +34,8 @@ export const Header: React.FC<HeaderProps> = ({ score, streak, theme, onThemeTog
                 <div className="flex items-center justify-between gap-4">
                     {/* Left side: Title & Logo */}
                     <div className="flex flex-col">
-                        <a href="https://www.rhbinsurance.com.my/" target="_blank" rel="noopener noreferrer" aria-label="Brought to you by Maybank">
-                            <img src="https://i.imgur.com/YEr2agc.png" alt="Brought to you by Maybank" className="h-auto w-24" />
+                        <a href="https://www.rhbinsurance.com.my/" target="_blank" rel="noopener noreferrer" aria-label="Brought to you by RHB Insurance">
+                            <img src="https://i.imgur.com/YEr2agc.png" alt="Brought to you by RHB Insurance" className="h-auto w-24" />
                         </a>
                         <img src={logoUrl} alt="ESG Student Guide by RHB" className="mt-2 h-14" />
                     </div>
