@@ -1,5 +1,3 @@
-
-
 import type { DecisionTree, Badge, WordSearchPoolItem, DragDropQuizNode, WordSearchQuizNode } from './types';
 
 export const BADGES: Badge[] = [
@@ -26,11 +24,6 @@ export const WORD_SEARCH_POOL: WordSearchPoolItem[] = [
 export const quizOrder = ['quiz_q1', 'quiz_q2', 'quiz_q3', 'quiz_q4', 'quiz_q5', 'quiz_q6_prompt', 'quiz_q7_prompt', 'quiz_q8'];
 
 export const progressNodes = new Set([
-  'start',
-  'collect_full_name',
-  'collect_email',
-  'collect_phone_number',
-  'collect_university',
   'greeting',
   'what_is_esg_answer',
   'esg_breakdown_hub',
@@ -74,31 +67,6 @@ export const progressNodes = new Set([
 export const totalProgressSteps = progressNodes.size;
 
 export const decisionTree: DecisionTree = {
-    'start': {
-        text: "start_text",
-        type: 'PROMPT',
-        nextNode: 'collect_full_name',
-    },
-    'collect_full_name': {
-        text: "collect_full_name_text",
-        type: 'PROMPT',
-        nextNode: 'collect_email',
-    },
-    'collect_email': {
-        text: "collect_email_text",
-        type: 'PROMPT',
-        nextNode: 'collect_phone_number',
-    },
-    'collect_phone_number': {
-        text: "collect_phone_number_text",
-        type: 'PROMPT',
-        nextNode: 'collect_university',
-    },
-    'collect_university': {
-        text: "collect_university_text",
-        type: 'PROMPT',
-        nextNode: 'greeting',
-    },
     'greeting': {
         text: "greeting_text",
         type: 'QUESTION',
@@ -546,7 +514,7 @@ export const decisionTree: DecisionTree = {
         type: 'ANSWER',
         isDynamic: true,
         buttons: [ 
-            { text: "btn_claim_certificate", nextNode: '#', type: 'show_certificate' },
+            { text: "btn_view_certificate", nextNode: '#', type: 'show_certificate' },
             { text: "btn_share_score", nextNode: 'share_prompt' },
             { text: "btn_end_curriculum", nextNode: 'end_curriculum'},
             { text: "btn_start_over", nextNode: 'start' } 
@@ -556,7 +524,7 @@ export const decisionTree: DecisionTree = {
         type: 'REDIRECT',
         nextNode: 'quiz_end'
     },
-    'post_claim_options': {
+    'post_certificate_options': {
         text: "certificate_sent_text",
         type: 'ANSWER',
         buttons: [
@@ -564,10 +532,6 @@ export const decisionTree: DecisionTree = {
             { text: "btn_end_curriculum", nextNode: 'end_curriculum' },
             { text: "btn_start_over", nextNode: 'start' }
         ]
-    },
-    'post_claim_options_revisit': {
-        type: 'REDIRECT',
-        nextNode: 'post_claim_options'
     },
     'share_prompt': {
         text: 'share_prompt_text', // This node is a trigger for dynamic buttons
@@ -592,5 +556,9 @@ export const decisionTree: DecisionTree = {
         text: 'end_curriculum_text',
         type: 'ANSWER',
         buttons: [ { text: "btn_start_over", nextNode: 'start' } ]
+    },
+     'start': { // Added a simple redirect for the "Start Over" button
+        type: 'REDIRECT',
+        nextNode: 'greeting'
     }
 };
