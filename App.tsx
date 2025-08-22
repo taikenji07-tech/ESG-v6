@@ -9,10 +9,12 @@ import { DragDropQuiz } from './DragDropQuiz';
 import { WordSearchQuiz } from './WordSearchQuiz';
 import { ToastNotification } from './ToastNotification';
 import { ProgressMilestonePopup } from './ProgressMilestonePopup';
+import { Certificate } from './Certificate';
+import { OnboardingForm } from './OnboardingForm';
 import { decisionTree, quizOrder, progressNodes, totalProgressSteps, BADGES, WORD_SEARCH_POOL } from './constants';
 import { translations } from './translations';
 import type { Message, NodeId, DecisionTree, Node, Button, GameState, Badge, LoopQuestionNode, Language, DragDropQuizNode, WordSearchQuizNode } from './types';
-import { getDynamicResponse, translateToMalay, submitToGoogleForm, validateEmailWithAI, getAIImpactReminder, validatePhoneNumberWithAI } from './geminiService';
+import { getDynamicResponse, translateToMalay, submitToGoogleForm, getAIImpactReminder } from './geminiService';
 
 const avatarIconMap: Record<string, React.FC<React.SVGProps<SVGSVGElement>>> = {
     avatar1: Avatar1Icon,
@@ -127,16 +129,18 @@ const App: React.FC = () => {
 
     const [gameState, setGameState] = useState<GameState>(initialGameState);
     const [messages, setMessages] = useState<Message[]>([]);
-    const [currentNodeId, setCurrentNodeId] = useState<NodeId>('start');
+    const [currentNodeId, setCurrentNodeId] = useState<NodeId>('greeting');
     const [inputVisible, setInputVisible] = useState(false);
     const [inputValue, setInputValue] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [visitedLoopBranches, setVisitedLoopBranches] = useState(new Set<string>());
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
     const [language, setLanguage] = useState<Language>('en');
     const [activeBadge, setActiveBadge] = useState<Badge | null>(null);
-    const [appPhase, setAppPhase] = useState<'avatar_selection' | 'chat'>('avatar_selection');
+    const [appPhase, setAppPhase] = useState<'avatar_selection' | 'onboarding_form' | 'chat'>('avatar_selection');
     const [userAvatar, setUserAvatar] = useState<string>('avatar1');
     const [showCelebration, setShowCelebration] = useState(false);
+    const [showCertificate, setShowCertificate] = useState(false);
     const [toast, setToast] = useState<string | null>(null);
     const [milestoneText, setMilestoneText] = useState<string | null>(null);
 
@@ -237,7 +241,7 @@ const App: React.FC = () => {
         setGameState(initialGameState);
         setMessages([]);
         setVisitedLoopBranches(new Set());
-        setCurrentNodeId('start');
+        setCurrentNodeId('greeting');
         setAppPhase('avatar_selection');
         setShowCelebration(false);
     };
@@ -251,11 +255,6 @@ const App: React.FC = () => {
             if (isNewNode) {
                 setGameState(prev => {
                     const newVisited = new Set(prev.visitedProgressNodes).add(currentNodeId);
-                    
-                    // Do not award points for the initial 'start' node
-                    if (currentNodeId === 'start') {
-                        return { ...prev, visitedProgressNodes: newVisited };
-                    }
                     
                     const oldProgressScore = Math.floor((prev.visitedProgressNodes.size / totalProgressSteps) * 200);
                     const newProgressScore = Math.floor((newVisited.size / totalProgressSteps) * 200);
@@ -315,6 +314,7 @@ const App: React.FC = () => {
             let messageText: string;
             const replacements: Record<string, string | number> = {
                 userName: gameState.userName,
+                certificateName: gameState.certificateName,
                 score: Math.round(gameState.score),
                 quizCorrectAnswers: gameState.quizCorrectAnswers,
                 major: gameState.major,
@@ -322,7 +322,7 @@ const App: React.FC = () => {
 
             if (currentNodeId.startsWith('share_prompt')) {
                 const shareText = t('linkedin_share_text', { score: Math.round(gameState.score) });
-                const backNode = currentNodeId === 'share_prompt_after_claim' ? 'post_claim_options_revisit' : 'quiz_end_revisit';
+                const backNode = currentNodeId === 'share_prompt_after_claim' ? 'post_certificate_options' : 'quiz_end_revisit';
                 
                 const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
                 let shareButtons: Button[];
@@ -490,8 +490,11 @@ const App: React.FC = () => {
 
             } else if ((node.type === 'QUESTION' || node.type === 'ANSWER') && node.buttons) {
                 let currentButtons = node.buttons;
-                if (currentNodeId === 'quiz_end' && gameState.certificateClaimed) {
-                    currentButtons = currentButtons.filter(btn => btn.type !== 'show_certificate');
+                if (currentNodeId === 'quiz_end') {
+                    // Only show the view certificate button if data has been provided and it hasn't been "claimed" yet.
+                    if (!gameState.certificateName || gameState.certificateClaimed) {
+                        currentButtons = currentButtons.filter(btn => btn.type !== 'show_certificate');
+                    }
                 }
                 messageButtons = currentButtons.map(btn => ({ ...btn, text: t(btn.text) }));
             }
@@ -515,6 +518,25 @@ const App: React.FC = () => {
     const handleAvatarSelect = (avatarId: string) => {
         userInteractionCount.current++;
         setUserAvatar(avatarId);
+        setAppPhase('onboarding_form');
+    };
+
+    const handleOnboardingSubmit = (data: {
+        name: string;
+        fullName: string;
+        email: string;
+        phone: string;
+        university: string;
+    }) => {
+        userInteractionCount.current++;
+        setGameState(prev => ({
+            ...prev,
+            userName: data.name,
+            certificateName: data.fullName,
+            email: data.email,
+            phoneNumber: data.phone,
+            university: data.university,
+        }));
         setAppPhase('chat');
     };
 
@@ -536,16 +558,12 @@ const App: React.FC = () => {
             return;
         }
         
-        if (nextNodeId === 'end_curriculum') {
-            setShowCelebration(true);
-            return;
-        }
-
+        addMessage({ sender: 'user', text: buttonText }, lastMessage.id);
+        
         if (type === 'show_certificate') {
-            addMessage({ sender: 'user', text: buttonText }, lastMessage.id);
-            setGameState(prev => ({...prev, certificateClaimed: true}));
-
-            // Fire-and-forget submission
+            setShowCertificate(true);
+            setGameState(prev => ({ ...prev, certificateClaimed: true }));
+             // Fire-and-forget submission
             submitToGoogleForm({
                 name: gameState.certificateName,
                 email: gameState.email,
@@ -554,16 +572,17 @@ const App: React.FC = () => {
                 phoneNumber: gameState.phoneNumber,
             }).then(success => {
                 if (!success) {
-                    // Optionally handle submission failure, e.g., show a toast.
                     console.error("Certificate submission failed in the background.");
                 }
             });
-
-            setCurrentNodeId('post_claim_options');
+            setCurrentNodeId('post_certificate_options');
             return;
         }
 
-        addMessage({ sender: 'user', text: buttonText }, lastMessage.id);
+        if (nextNodeId === 'end_curriculum') {
+            setShowCelebration(true);
+            return;
+        }
         
         const personalEsgPillarNodes = ['personal_esg_pillar_e_answer', 'personal_esg_pillar_s_answer', 'personal_esg_pillar_g_answer'];
         if (nextNodeId === 'matter_as_student_answer' && personalEsgPillarNodes.includes(currentNodeId)) {
@@ -578,7 +597,7 @@ const App: React.FC = () => {
             });
         }
         
-        if (nextNodeId === 'start') {
+        if (nextNodeId === 'start') { // The "Start Over" button still points here
             resetGame();
             return;
         }
@@ -698,79 +717,18 @@ const App: React.FC = () => {
     const handlePromptInput = async () => {
         userInteractionCount.current++;
         const message = inputValue.trim();
-        if (!message) return;
+        if (!message || isSubmitting) return;
 
         addMessage({ sender: 'user', text: message });
         const lastNode = decisionTree[currentNodeId];
         
         setInputValue('');
         setInputVisible(false);
-
+        
         if (lastNode.type !== 'PROMPT') return;
         
-        if (currentNodeId === 'collect_email') {
-            try {
-                const { isValid, reason, email: correctedEmail } = await validateEmailWithAI(message);
-                
-                if (isValid) {
-                    const finalEmail = correctedEmail || message;
-                    setGameState(prev => ({ ...prev, email: finalEmail }));
-                    setCurrentNodeId(lastNode.nextNode);
-                } else {
-                    let responseText = reason;
-                    if (language === 'ms') {
-                        responseText = await translateToMalay(responseText);
-                    }
-                    addMessage({ sender: 'bot', text: responseText });
-                    setInputVisible(true);
-                }
-            } catch (error) {
-                console.error("Error during email validation:", error);
-                let errorMessage = "I had a little trouble processing that. Could you please try again?";
-                 if (language === 'ms') {
-                    errorMessage = await translateToMalay(errorMessage);
-                }
-                addMessage({ sender: 'bot', text: errorMessage });
-                setInputVisible(true);
-            }
-            return;
-        }
-        
-        if (currentNodeId === 'collect_phone_number') {
-            try {
-                const { isValid, reason, phoneNumber: correctedPhoneNumber } = await validatePhoneNumberWithAI(message);
-                
-                if (isValid) {
-                    const finalPhoneNumber = correctedPhoneNumber || message;
-                    setGameState(prev => ({ ...prev, phoneNumber: finalPhoneNumber }));
-                    setCurrentNodeId(lastNode.nextNode);
-                } else {
-                    let responseText = reason;
-                    if (language === 'ms') {
-                        responseText = await translateToMalay(responseText);
-                    }
-                    addMessage({ sender: 'bot', text: responseText });
-                    setInputVisible(true);
-                }
-            } catch (error) {
-                console.error("Error during phone validation:", error);
-                let errorMessage = "I had a little trouble processing that. Could you please try again?";
-                 if (language === 'ms') {
-                    errorMessage = await translateToMalay(errorMessage);
-                }
-                addMessage({ sender: 'bot', text: errorMessage });
-                setInputVisible(true);
-            }
-            return;
-        }
-        
-        if (currentNodeId === 'start') {
-            setGameState(prev => ({...prev, userName: message}));
-        } else if (currentNodeId === 'collect_full_name') {
-            setGameState(prev => ({...prev, certificateName: message}));
-        } else if (currentNodeId === 'collect_university') {
-            setGameState(prev => ({...prev, university: message}));
-        } else if (currentNodeId === 'quiz_q6_prompt') {
+        // --- Quiz Prompts ---
+        if (currentNodeId === 'quiz_q6_prompt') {
             setGameState(prev => ({ ...prev, q6Attempts: prev.q6Attempts + 1 }));
         } else if (currentNodeId === 'quiz_q7_prompt') {
             setGameState(prev => ({ ...prev, q7Attempts: prev.q7Attempts + 1 }));
@@ -780,7 +738,9 @@ const App: React.FC = () => {
             setGameState(prev => ({ ...prev, lastQuestionId: currentNodeId }));
         }
 
+        // --- Dynamic Gemini Prompts ---
         if (lastNode.isDynamic) {
+            setIsSubmitting(true);
             try {
                 let contextPrompt = "";
                 const jsonInstruction = `Your primary task is to determine if the user's response is relevant to the question implicit in the instructions. Then, formulate a helpful response based on the context. Return your output as a JSON object with two keys: 'isRelevant' (boolean) and 'responseText' (string).`;
@@ -853,6 +813,8 @@ Keep all responses concise and uplifting.`;
                 }
                 addMessage({ sender: 'bot', text: errorMessage });
                 setInputVisible(true);
+            } finally {
+                setIsSubmitting(false);
             }
         } else {
              setCurrentNodeId(lastNode.nextNode);
@@ -914,6 +876,13 @@ Keep all responses concise and uplifting.`;
                         t={t} 
                     />
                  )}
+                 {showCertificate && (
+                    <Certificate
+                        name={gameState.certificateName}
+                        date={new Date().toLocaleDateString('en-GB')}
+                        onClose={() => setShowCertificate(false)}
+                    />
+                 )}
                 <main className="flex-1 max-w-3xl mx-auto w-full flex flex-col overflow-hidden">
                     {appPhase === 'avatar_selection' ? (
                         <div className="flex-1 flex flex-col items-center justify-center p-4 animate-fade-in-up">
@@ -931,6 +900,14 @@ Keep all responses concise and uplifting.`;
                                     </button>
                                 ))}
                             </div>
+                        </div>
+                    ) : appPhase === 'onboarding_form' ? (
+                        <div className="flex-1 overflow-y-auto custom-scrollbar">
+                            <OnboardingForm
+                                t={t}
+                                onSubmit={handleOnboardingSubmit}
+                                language={language}
+                            />
                         </div>
                     ) : (
                         <>
@@ -959,11 +936,13 @@ Keep all responses concise and uplifting.`;
                                             className="user-input-field"
                                             onKeyPress={(e) => e.key === 'Enter' && handlePromptInput()}
                                             aria-label={t('Type your answer here...')}
+                                            disabled={isSubmitting}
                                         />
                                         <button
                                             onClick={handlePromptInput}
                                             className="send-button"
                                             aria-label="Send message"
+                                            disabled={isSubmitting}
                                         >
                                             <SendIcon className="w-6 h-6" />
                                         </button>
