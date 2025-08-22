@@ -801,6 +801,11 @@ select.onboarding-input {
     background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%2390caf9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
 }
 
+select.onboarding-input:invalid {
+  color: var(--text-dim);
+  opacity: 0.8;
+}
+
 .onboarding-input:focus {
   outline: none;
   border-color: var(--accent);
@@ -832,4 +837,17 @@ select.onboarding-input {
 .onboarding-submit-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.other-university-container {
+  overflow: hidden;
+  transition: max-height 0.4s ease-in-out, opacity 0.4s ease-in-out;
+  max-height: 0;
+  opacity: 0;
+}
+
+.other-university-container.visible {
+  max-height: 150px; /* Ample height for the input and label */
+  opacity: 1;
+  margin-top: 1.25rem; /* Equivalent to space-y-5 from form */
 }
