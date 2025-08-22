@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { validateEmailWithAI, validatePhoneNumberWithAI } from './geminiService';
+import { validateEmailWithAI, validatePhoneNumberWithAI, translateToMalay } from './geminiService';
 import type { Language } from './types';
 
 interface OnboardingFormProps {
@@ -21,6 +21,7 @@ interface FormData {
     email: string;
     phone: string;
     university: string;
+    otherUniversity: string;
 }
 
 const universities = [
@@ -46,7 +47,6 @@ const universities = [
   "Universiti Pertahanan Nasional Malaysia (UPNM)"
 ];
 
-
 export const OnboardingForm: React.FC<OnboardingFormProps> = ({ t, onSubmit, language }) => {
     const [formData, setFormData] = useState<FormData>({
         name: '',
@@ -54,17 +54,28 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ t, onSubmit, lan
         email: '',
         phone: '',
         university: '',
+        otherUniversity: '',
     });
     const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-        if (errors[name as keyof FormData]) {
+        setFormData(prev => {
+            const newState = { ...prev, [name]: value };
+            // If user selects a pre-defined university, clear the 'other' field
+            if (name === 'university' && value !== 'Others') {
+                newState.otherUniversity = '';
+            }
+            return newState;
+        });
+        
+        // Clear errors as user types
+        const errorKey = (name === 'otherUniversity' ? 'university' : name) as keyof FormData;
+        if (errors[errorKey]) {
             setErrors(prev => {
                 const newErrors = { ...prev };
-                delete newErrors[name as keyof FormData];
+                delete newErrors[errorKey];
                 return newErrors;
             });
         }
@@ -74,24 +85,16 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ t, onSubmit, lan
         const newErrors: Partial<Record<keyof FormData, string>> = {};
         let isValid = true;
 
-        if (!formData.name.trim()) {
-            newErrors.name = t('error_required');
-            isValid = false;
-        }
-        if (!formData.fullName.trim()) {
-            newErrors.fullName = t('error_required');
-            isValid = false;
-        }
+        if (!formData.name.trim()) { newErrors.name = t('error_required'); isValid = false; }
+        if (!formData.fullName.trim()) { newErrors.fullName = t('error_required'); isValid = false; }
+        if (!formData.email.trim()) { newErrors.email = t('error_required'); isValid = false; }
+        if (!formData.phone.trim()) { newErrors.phone = t('error_required'); isValid = false; }
+        
         if (!formData.university.trim()) {
             newErrors.university = t('error_required');
             isValid = false;
-        }
-        if (!formData.email.trim()) {
-            newErrors.email = t('error_required');
-            isValid = false;
-        }
-        if (!formData.phone.trim()) {
-            newErrors.phone = t('error_required');
+        } else if (formData.university === 'Others' && !formData.otherUniversity.trim()) {
+            newErrors.university = t('error_required'); // Re-use the same error message for the text field
             isValid = false;
         }
 
@@ -110,13 +113,11 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ t, onSubmit, lan
         
         let aiValidationPassed = true;
         if (!emailResult.isValid) {
-            const translatedReason = language === 'ms' ? await translateToMalay(emailResult.reason) : emailResult.reason;
-            newErrors.email = translatedReason;
+            newErrors.email = language === 'ms' ? await translateToMalay(emailResult.reason) : emailResult.reason;
             aiValidationPassed = false;
         }
         if (!phoneResult.isValid) {
-            const translatedReason = language === 'ms' ? await translateToMalay(phoneResult.reason) : phoneResult.reason;
-            newErrors.phone = translatedReason;
+            newErrors.phone = language === 'ms' ? await translateToMalay(phoneResult.reason) : phoneResult.reason;
             aiValidationPassed = false;
         }
         
@@ -128,21 +129,6 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ t, onSubmit, lan
         
         return true;
     };
-    
-    // Helper function for Malay translation, needs to be defined within the file or imported.
-    const translateToMalay = async (text: string) => {
-        // This is a placeholder for the actual translation logic,
-        // which would typically involve an API call.
-        // For now, we'll just return the original text with a marker.
-        // In a real app, you would import this from your geminiService.
-         try {
-            const { translateToMalay } = await import('./geminiService');
-            return await translateToMalay(text);
-        } catch (e) {
-            console.error("Translation service not available");
-            return text;
-        }
-    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -150,7 +136,14 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ t, onSubmit, lan
 
         const isValid = await validateForm();
         if (isValid) {
-            onSubmit(formData);
+            const finalUniversity = formData.university === 'Others' ? formData.otherUniversity : formData.university;
+            onSubmit({
+                name: formData.name,
+                fullName: formData.fullName,
+                email: formData.email,
+                phone: formData.phone,
+                university: finalUniversity,
+            });
         }
     };
 
@@ -194,7 +187,22 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ t, onSubmit, lan
                             {universities.map(uni => (
                                 <option key={uni} value={uni}>{uni}</option>
                             ))}
+                            <option value="Others">{t('university_other')}</option>
                         </select>
+                        
+                        <div className={`other-university-container ${formData.university === 'Others' ? 'visible' : ''}`}>
+                             <label htmlFor="otherUniversity" className="onboarding-label">{t('label_other_university')}</label>
+                             <input
+                                type="text"
+                                id="otherUniversity"
+                                name="otherUniversity"
+                                value={formData.otherUniversity}
+                                onChange={handleChange}
+                                placeholder={t('placeholder_other_university')}
+                                className="onboarding-input"
+                             />
+                        </div>
+
                         {errors.university && <p className="onboarding-error">{errors.university}</p>}
                     </div>
 
