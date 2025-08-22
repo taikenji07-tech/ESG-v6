@@ -18,6 +18,23 @@ export const translations: Translations = {
     // Avatar Selection
     avatar_select_title: "Pick a cute avatar!",
     avatar_select_subtitle: "Choose a friendly face to be you in our chat! ✨",
+    
+    // Onboarding Form
+    onboarding_title: "Just a few details!",
+    onboarding_subtitle: "We need this for your certificate of completion. ✨",
+    label_name: "What should I call you?",
+    placeholder_name: "e.g. Alex",
+    label_fullname: "Full Name (for certificate)",
+    placeholder_fullname: "e.g. Alex Smith",
+    label_email: "Email Address",
+    placeholder_email: "e.g. alex@university.edu",
+    label_phone: "Phone Number",
+    placeholder_phone: "e.g. 012-3456789",
+    label_university: "University Name",
+    placeholder_university: "e.g. University of Malaya",
+    btn_lets_go: "Let's Go! 🚀",
+    btn_submitting: "Submitting...",
+    error_required: "This field is required.",
 
     // Badges
     badge_big_brain_name: "📘 Big Brain Mode!",
@@ -38,12 +55,7 @@ export const translations: Translations = {
     btn_close: "Close",
 
     // Decision Tree Nodes
-    start_text: "Hiii! 👋 I'm Capytron, your super friendly guide to all things ESG! I'm so excited to chat with you. To start, what should I call you?",
-    collect_full_name_text: "It's a pleasure to meet you, **{userName}**! For the certificate we'll issue at the end, please provide your full name as you'd like it to appear.",
-    collect_email_text: "Thank you! And what's your email address? Please double-check it, as we'll send your certificate via email.",
-    collect_phone_number_text: "Got it. What's your phone number? We'll use this for certificate verification if needed.",
-    collect_university_text: "Which university are you from?",
-    greeting_text: "Awesome, we're all set, **{userName}**! Let's dive in and learn some amazing things together. First up... what even **is** ESG?",
+    greeting_text: "Awesome, thanks for all the info, **{userName}**! We're all set. Let's dive in and learn some amazing things together. First up... what even **is** ESG?",
     what_is_esg_answer_text:
       "ESG = **Environmental, Social & Governance.**\n\nIt’s a framework for how we care for the planet 🌍, people 🤝, and systems 🏛️.",
     esg_breakdown_hub_text: "Great choice! This is the core of ESG. Pick a pillar to explore, or continue when you're ready.",
@@ -122,7 +134,7 @@ export const translations: Translations = {
       "You did it! 🎉 Congratulations on completing the quiz, **{userName}**!\n\nYour final score is **{score}** points. You answered **{quizCorrectAnswers}** questions correctly.\n\n**Eco-Fact:** Our chat session generated an estimated **{co2}g** of CO2, which is like running an air conditioner for **{acMinutes}** minutes or driving a car for **{carKm}** km. A little reminder of our digital footprint!\n\n{aiReminder}",
     final_thanks_no_quiz_text:
       "That's perfectly fine! The learning journey is what counts. I hope you found our session insightful. Remember, every small action contributes to a more sustainable future. Thanks for your time!\n\n**Eco-Fact:** Our chat session generated an estimated **{co2}g** of CO2, which is like running an air conditioner for **{acMinutes}** minutes or driving a car for **{carKm}** km. A little reminder of our digital footprint!\n\n{aiReminder}",
-    certificate_sent_text: "Awesome! Your certificate is on its way to your email. What would you like to do next?",
+    certificate_sent_text: "Your personalized certificate is ready! I've also sent a copy to your email. What would you like to do next?",
     share_prompt_text: "Share your score on LinkedIn to inspire others! Just copy the text below and paste it in a new post.",
     linkedin_share_text: "Just completed the Interactive ESG Challenge by RHB Insurance and scored {score} points! 🌟 Learned so much about how Environmental, Social, and Governance principles are shaping our future. It was fun and super insightful! #ESG #RHBInsurance #Sustainability #FutureReady",
     end_curriculum_text: "Thank you for learning with me, **{userName}**! Keep on making a difference. 👋",
@@ -178,7 +190,7 @@ export const translations: Translations = {
     "btn_next_question": "Next Question",
     "btn_continue": "Continue",
     "btn_final_question": "Final Question!",
-    "btn_claim_certificate": "Claim My Certificate 🏅",
+    "btn_view_certificate": "View My Certificate 🏅",
     "btn_share_score": "Share My Score 🚀",
     "btn_end_curriculum": "End Session",
     "btn_start_over": "Start Over",
@@ -284,6 +296,23 @@ export const translations: Translations = {
     // Avatar Selection
     avatar_select_title: "Pilih avatar comel!",
     avatar_select_subtitle: "Pilih wajah mesra untuk mewakili anda dalam perbualan kita! ✨",
+    
+    // Onboarding Form
+    onboarding_title: "Beberapa butiran sahaja!",
+    onboarding_subtitle: "Kami perlukan ini untuk sijil penyertaan anda. ✨",
+    label_name: "Apa nama panggilan anda?",
+    placeholder_name: "Cth. Alex",
+    label_fullname: "Nama Penuh (untuk sijil)",
+    placeholder_fullname: "Cth. Alex Smith",
+    label_email: "Alamat E-mel",
+    placeholder_email: "Cth. alex@university.edu",
+    label_phone: "Nombor Telefon",
+    placeholder_phone: "Cth. 012-3456789",
+    label_university: "Nama Universiti",
+    placeholder_university: "Cth. Universiti Malaya",
+    btn_lets_go: "Jom! 🚀",
+    btn_submitting: "Menghantar...",
+    error_required: "Ruangan ini wajib diisi.",
 
     // Badges
     badge_big_brain_name: "📘 Mod Otak Geliga!",
@@ -304,12 +333,7 @@ export const translations: Translations = {
     btn_close: "Tutup",
 
     // Decision Tree Nodes
-    start_text: "Hai! 👋 Saya Capytron, pemandu anda yang sangat mesra untuk semua perkara ESG! Saya sangat teruja untuk berbual dengan anda. Sebagai permulaan, apa nama panggilan anda?",
-    collect_full_name_text: "Selamat berkenalan, **{userName}**! Untuk sijil yang akan kami keluarkan pada akhir nanti, sila berikan nama penuh anda seperti yang anda mahu ia tertera.",
-    collect_email_text: "Terima kasih! Dan apakah alamat e-mel anda? Sila semak semula, kerana kami akan menghantar sijil anda melalui e-mel.",
-    collect_phone_number_text: "Baiklah. Apakah nombor telefon anda? Kami akan gunakan ini untuk pengesahan sijil jika perlu.",
-    collect_university_text: "Anda dari universiti mana?",
-    greeting_text: "Hebat, semuanya sudah sedia, **{userName}**! Jom kita selami dan belajar perkara-perkara hebat bersama. Pertama sekali... apa sebenarnya **ESG** tu?",
+    greeting_text: "Hebat, terima kasih atas semua maklumat, **{userName}**! Semuanya sudah sedia. Jom kita selami dan belajar perkara-perkara hebat bersama. Pertama sekali... apa sebenarnya **ESG** tu?",
     what_is_esg_answer_text: "ESG = **Alam Sekitar, Sosial & Tadbir Urus (Environmental, Social & Governance).**\n\nIa adalah rangka kerja tentang bagaimana kita menjaga planet 🌍, manusia 🤝, dan sistem 🏛️.",
     esg_breakdown_hub_text: "Pilihan yang bagus! Ini adalah teras ESG. Pilih satu cabang untuk diterokai, atau teruskan apabila anda sudah bersedia.",
     esg_breakdown_hub_revisit_text: "Sudah tentu! Apa lagi yang patut kita terokai di sini?",
@@ -369,7 +393,7 @@ export const translations: Translations = {
     quiz_q8_text: "Cabaran terakhir! Cari 7 perkataan berkaitan ESG yang tersembunyi dalam grid di bawah. Ini adalah soalan bonus bernilai tinggi!",
     quiz_end_text: "Anda berjaya! 🎉 Tahniah kerana melengkapkan kuiz, **{userName}**!\n\nSkor akhir anda ialah **{score}** mata. Anda menjawab **{quizCorrectAnswers}** soalan dengan betul.\n\n**Fakta-Eko:** Sembang kita ini telah menjana kira-kira **{co2}g** CO2, bersamaan dengan menjalankan penghawa dingin selama **{acMinutes}** minit atau memandu kereta sejauh **{carKm}** km. Sedikit peringatan tentang jejak digital kita!\n\n{aiReminder}",
     final_thanks_no_quiz_text: "Tidak mengapa! Yang penting adalah perjalanan pembelajaran. Saya harap anda mendapati sesi kita mencerahkan. Ingat, setiap tindakan kecil menyumbang kepada masa depan yang lebih mampan. Terima kasih kerana meluangkan masa!\n\n**Fakta-Eko:** Sembang kita ini telah menjana kira-kira **{co2}g** CO2, bersamaan dengan menjalankan penghawa dingin selama **{acMinutes}** minit atau memandu kereta sejauh **{carKm}** km. Sedikit peringatan tentang jejak digital kita!\n\n{aiReminder}",
-    certificate_sent_text: "Hebat! Sijil anda sedang dalam perjalanan ke e-mel anda. Apa yang anda ingin lakukan seterusnya?",
+    certificate_sent_text: "Sijil peribadi anda sudah sedia! Saya juga telah menghantar salinannya ke e-mel anda. Apa yang anda ingin lakukan seterusnya?",
     share_prompt_text: "Kongsikan skor anda di LinkedIn untuk memberi inspirasi kepada orang lain! Salin teks di bawah dan tampalkannya dalam siaran baharu.",
     linkedin_share_text: "Saya baru sahaja menyelesaikan Cabaran ESG Interaktif oleh RHB Insurance dan mendapat {score} mata! 🌟 Belajar banyak tentang bagaimana Alam Sekitar, Sosial, dan Tadbir Urus membentuk masa depan kita. Seronok dan sangat mencerahkan! #ESG #RHBInsurance #Kelestarian #SediaMasaDepan",
     end_curriculum_text: "Terima kasih kerana belajar bersama saya, **{userName}**! Teruskan membuat perubahan. 👋",
@@ -425,7 +449,7 @@ export const translations: Translations = {
     "btn_next_question": "Soalan Seterusnya",
     "btn_continue": "Teruskan",
     "btn_final_question": "Soalan Terakhir!",
-    "btn_claim_certificate": "Tuntut Sijil Saya 🏅",
+    "btn_view_certificate": "Lihat Sijil Saya 🏅",
     "btn_share_score": "Kongsi Skor Saya 🚀",
     "btn_end_curriculum": "Tamatkan Sesi",
     "btn_start_over": "Mula Semula",
