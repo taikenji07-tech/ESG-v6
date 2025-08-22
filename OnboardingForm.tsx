@@ -23,6 +23,30 @@ interface FormData {
     university: string;
 }
 
+const universities = [
+  "Universiti Tun Hussein Onn Malaysia (UTHM)",
+  "Universiti Sains Malaysia (USM)",
+  "Universiti Kebangsaan Malaysia (UKM)",
+  "Universiti Putra Malaysia (UPM)",
+  "Universiti Teknologi Malaysia (UTM)",
+  "Universiti Islam Antarabangsa Malaysia (UIAM)",
+  "Universiti Utara Malaysia (UUM)",
+  "Universiti Malaysia Sarawak (UNIMAS)",
+  "Universiti Malaysia Sabah (UMS)",
+  "Universiti Pendidikan Sultan Idris (UPSI)",
+  "Universiti Sains Islam Malaysia (USIM)",
+  "Universiti Teknologi MARA (UiTM)",
+  "Universiti Malaysia Terengganu (UMT)",
+  "Universiti Malaya (UM)",
+  "Universiti Teknikal Malaysia Melaka (UTeM)",
+  "Universiti Malaysia Pahang Al-Sultan Abdullah (UMPSA)",
+  "Universiti Malaysia Perlis (UniMAP)",
+  "Universiti Sultan Zainal Abidin (UniSZA)",
+  "Universiti Malaysia Kelantan (UMK)",
+  "Universiti Pertahanan Nasional Malaysia (UPNM)"
+];
+
+
 export const OnboardingForm: React.FC<OnboardingFormProps> = ({ t, onSubmit, language }) => {
     const [formData, setFormData] = useState<FormData>({
         name: '',
@@ -34,7 +58,7 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ t, onSubmit, lan
     const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
         if (errors[name as keyof FormData]) {
@@ -158,7 +182,19 @@ export const OnboardingForm: React.FC<OnboardingFormProps> = ({ t, onSubmit, lan
                     </div>
                     <div>
                         <label htmlFor="university" className="onboarding-label">{t('label_university')}</label>
-                        <input type="text" id="university" name="university" value={formData.university} onChange={handleChange} placeholder={t('placeholder_university')} className="onboarding-input" required />
+                        <select 
+                            id="university" 
+                            name="university" 
+                            value={formData.university} 
+                            onChange={handleChange} 
+                            className="onboarding-input" 
+                            required
+                        >
+                            <option value="" disabled>{t('placeholder_university')}</option>
+                            {universities.map(uni => (
+                                <option key={uni} value={uni}>{uni}</option>
+                            ))}
+                        </select>
                         {errors.university && <p className="onboarding-error">{errors.university}</p>}
                     </div>
 
