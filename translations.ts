@@ -55,7 +55,7 @@ export const translations: Translations = {
     btn_close: "Close",
 
     // Decision Tree Nodes
-    greeting_text: "Awesome, thanks for all the info, **{userName}**! We're all set. Let's dive in and learn some amazing things together. First up... what even **is** ESG?",
+    greeting_text: "Awesome, thanks for all the info, **{userName}**! I'm Capytron, your friendly ESG guide. Let's dive in and learn some amazing things together. First up... what even **is** ESG?",
     what_is_esg_answer_text:
       "ESG = **Environmental, Social & Governance.**\n\nIt’s a framework for how we care for the planet 🌍, people 🤝, and systems 🏛️.",
     esg_breakdown_hub_text: "Great choice! This is the core of ESG. Pick a pillar to explore, or continue when you're ready.",
