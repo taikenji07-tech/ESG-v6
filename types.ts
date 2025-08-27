@@ -1,4 +1,3 @@
-
 export type NodeId = string;
 export type Language = 'en' | 'ms';
 
@@ -6,7 +5,7 @@ export interface Button {
     text: string;
     nextNode: NodeId;
     branchKey?: string;
-    type?: 'show_certificate' | 'copy_text' | 'external_link';
+    type?: 'claim_certificate' | 'copy_text' | 'external_link';
 }
 
 export interface Branch {
