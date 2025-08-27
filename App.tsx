@@ -9,7 +9,6 @@ import { DragDropQuiz } from './DragDropQuiz';
 import { WordSearchQuiz } from './WordSearchQuiz';
 import { ToastNotification } from './ToastNotification';
 import { ProgressMilestonePopup } from './ProgressMilestonePopup';
-import { Certificate } from './Certificate';
 import { OnboardingForm } from './OnboardingForm';
 import { decisionTree, quizOrder, progressNodes, totalProgressSteps, BADGES, WORD_SEARCH_POOL } from './constants';
 import { translations } from './translations';
@@ -35,7 +34,7 @@ const QUIZ_POINTS: Record<string, number> = {
 
 const ChatMessage: React.FC<{
     message: Message;
-    onOptionClick: (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: 'show_certificate' | 'copy_text' | 'external_link') => void;
+    onOptionClick: (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: 'claim_certificate' | 'copy_text' | 'external_link') => void;
     onDragDropQuizComplete: (isCorrect: boolean) => void;
     onWordSearchQuizComplete: (foundWords: string[]) => void;
     onWordSearchQuizSkip: () => void;
@@ -140,7 +139,6 @@ const App: React.FC = () => {
     const [appPhase, setAppPhase] = useState<'avatar_selection' | 'onboarding_form' | 'chat'>('avatar_selection');
     const [userAvatar, setUserAvatar] = useState<string>('avatar1');
     const [showCelebration, setShowCelebration] = useState(false);
-    const [showCertificate, setShowCertificate] = useState(false);
     const [toast, setToast] = useState<string | null>(null);
     const [milestoneText, setMilestoneText] = useState<string | null>(null);
 
@@ -493,7 +491,7 @@ const App: React.FC = () => {
                 if (currentNodeId === 'quiz_end') {
                     // Only show the view certificate button if data has been provided and it hasn't been "claimed" yet.
                     if (!gameState.certificateName || gameState.certificateClaimed) {
-                        currentButtons = currentButtons.filter(btn => btn.type !== 'show_certificate');
+                        currentButtons = currentButtons.filter(btn => btn.type !== 'claim_certificate');
                     }
                 }
                 messageButtons = currentButtons.map(btn => ({ ...btn, text: t(btn.text) }));
@@ -540,7 +538,7 @@ const App: React.FC = () => {
         setAppPhase('chat');
     };
 
-    const handleOptionClick = async (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: 'show_certificate' | 'copy_text' | 'external_link') => {
+    const handleOptionClick = async (nextNodeId: NodeId, branchKey: string, buttonText: string, type?: 'claim_certificate' | 'copy_text' | 'external_link') => {
         userInteractionCount.current++;
         const lastMessage = messages[messages.length-1];
 
@@ -560,8 +558,7 @@ const App: React.FC = () => {
         
         addMessage({ sender: 'user', text: buttonText }, lastMessage.id);
         
-        if (type === 'show_certificate') {
-            setShowCertificate(true);
+        if (type === 'claim_certificate') {
             setGameState(prev => ({ ...prev, certificateClaimed: true }));
              // Fire-and-forget submission
             submitToGoogleForm({
@@ -575,7 +572,7 @@ const App: React.FC = () => {
                     console.error("Certificate submission failed in the background.");
                 }
             });
-            setCurrentNodeId('post_certificate_options');
+            setCurrentNodeId(nextNodeId);
             return;
         }
 
@@ -874,13 +871,6 @@ Keep all responses concise and uplifting.`;
                         onClose={() => setShowCelebration(false)} 
                         onRestart={resetGame}
                         t={t} 
-                    />
-                 )}
-                 {showCertificate && (
-                    <Certificate
-                        name={gameState.certificateName}
-                        date={new Date().toLocaleDateString('en-GB')}
-                        onClose={() => setShowCertificate(false)}
                     />
                  )}
                 <main className="flex-1 max-w-3xl mx-auto w-full flex flex-col overflow-hidden">
